@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Tracker Álbum Mundial 2026</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#f4f4f4;
+}
+
+header{
+background:#e10600;
+color:white;
+padding:15px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
+
+.controls{
+background:white;
+padding:10px;
+text-align:center;
+border-bottom:1px solid #ccc;
+}
+
+input{
+padding:6px;
+width:170px;
+}
+
+button{
+padding:5px 8px;
+font-size:12px;
+margin:3px;
+cursor:pointer;
+}
+
+.tabs{
+display:flex;
+background:#111;
+}
+
+.tab{
+flex:1;
+padding:10px;
+text-align:center;
+color:white;
+cursor:pointer;
+font-size:14px;
+}
+
+.active{
+background:#e10600;
+}
+
+.page{
+display:none;
+padding:15px;
+}
+
+.show{
+display:block;
+}
+
+details{
+background:white;
+margin-bottom:10px;
+padding:10px;
+border-radius:6px;
+}
+
+.groupGrid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.teamTitle{
+font-weight:bold;
+font-size:14px;
+margin-bottom:6px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.teamComplete{
+color:#1db954;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:3px;
+}
+
+.sticker{
+background:#ddd;
+font-size:11px;
+padding:6px;
+border-radius:4px;
+cursor:pointer;
+}
+
+.sticker.have{
+background:#ffd500;
+}
+
+.sticker.repeated{
+background:#ffb347;
+}
+
+.progress{
+height:20px;
+background:#ddd;
+border-radius:10px;
+margin-top:10px;
+}
+
+.bar{
+height:20px;
+background:#ffd500;
+border-radius:10px;
+width:0%;
+}
+
+.searchBox{
+margin-top:10px;
+padding:10px;
+background:#fff;
+border-radius:6px;
+}
+
+@media print{
+button{display:none;}
+}
+
+</style>
+
+<script>
+if ("serviceWorker" in navigator) {
+window.addEventListener("load", () => {
+navigator.serviceWorker.register("service-worker.js");
+});
+}
+</script>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#e10600">
+
+<script>
+if ("serviceWorker" in navigator) {
+window.addEventListener("load", () => {
+navigator.serviceWorker.register("service-worker.js");
+});
+}
+</script>
+
+</head>
+
+<body>
+
+<header>Tracker Álbum Mundial 2026</header>
+
+<div class="controls">
+
+<input id="search" placeholder="ARG 7">
+<button onclick="findSticker()">Buscar</button>
+
+<button onclick="toggleMissing()">Solo faltantes</button>
+
+<button onclick="exportData()">Exportar</button>
+
+<input type="file" id="importFile" style="display:none" onchange="importData(event)">
+<button onclick="document.getElementById('importFile').click()">Importar</button>
+
+<button onclick="printMissing()">Imprimir faltantes</button>
+
+</div>
+
+<div class="tabs">
+
+<div class="tab active" onclick="openTab(event,'fwc')">FWC</div>
+<div class="tab" onclick="openTab(event,'teams')">SELECCIONES</div>
+<div class="tab" onclick="openTab(event,'coca')">COCA COLA</div>
+<div class="tab" onclick="openTab(event,'duplicates')">REPETIDAS</div>
+<div class="tab" onclick="openTab(event,'stats')">RESUMEN</div>
+
+</div>
+
+<div id="fwc" class="page show"></div>
+<div id="teams" class="page"></div>
+<div id="coca" class="page"></div>
+<div id="duplicates" class="page"></div>
+<div id="stats" class="page"></div>
+
+<div id="searchResult" class="searchBox"></div>
+
+<script>
+
+let onlyMissing=false
+let data=JSON.parse(localStorage.getItem("album2026"))||{}
+
+const teamNames={
+ARG:"ARGENTINA",
+BRA:"BRAZIL",
+MEX:"MEXICO",
+GER:"GERMANY",
+FRA:"FRANCE",
+ESP:"SPAIN",
+ENG:"ENGLAND",
+POR:"PORTUGAL",
+NED:"NETHERLANDS",
+BEL:"BELGIUM",
+USA:"UNITED STATES",
+URU:"URUGUAY",
+COL:"COLOMBIA",
+PAR:"PARAGUAY",
+ECU:"ECUADOR",
+JPN:"JAPAN",
+SWE:"SWEDEN",
+SUI:"SWITZERLAND",
+CRO:"CROATIA",
+CAN:"CANADA"
+}
+
+function save(){
+localStorage.setItem("album2026",JSON.stringify(data))
+}
+
+function toggleSticker(id,el){
+
+if(!data[id]) data[id]=1
+else data[id]=0
+
+updateSticker(el,id)
+
+save()
+
+let team=id.split(" ")[0]
+
+if(team!="FWC" && team!="COCA")
+updateTeamTitle(team)
+
+updateStats()
+
+}
+
+function updateSticker(el,id){
+
+let count=data[id]||0
+
+el.classList.remove("have","repeated")
+
+if(count==1) el.classList.add("have")
+if(count>1) el.classList.add("repeated")
+
+}
+
+function sticker(parent,label){
+
+let s=document.createElement("div")
+s.className="sticker"
+s.innerText=label
+
+updateSticker(s,label)
+
+s.onclick=()=>toggleSticker(label,s)
+
+parent.appendChild(s)
+
+}
+
+function countTeam(team){
+
+let have=0
+
+for(let i=1;i<=20;i++){
+
+let label
+
+if(i==1) label=team+" 1 - LOGO"
+else if(i==13) label=team+" 13 - EQUIPO"
+else label=team+" "+i+" - @"
+
+if(data[label]) have++
+
+}
+
+return have
+
+}
+
+function updateTeamTitle(team){
+
+document.querySelectorAll(".teamTitle").forEach(title=>{
+
+if(title.dataset.team==team){
+
+let count=countTeam(team)
+
+title.classList.remove("teamComplete")
+
+if(count==20)
+title.classList.add("teamComplete")
+
+let full=teamNames[team]||""
+
+title.innerHTML=team+" - "+full+" ("+count+" / 20) <button onclick=\"markTeam('"+team+"')\">✔</button>"
+
+title.dataset.team=team
+
+}
+
+})
+
+}
+
+function markTeam(team){
+
+let allMarked=true
+
+for(let i=1;i<=20;i++){
+
+let label
+
+if(i==1) label=team+" 1 - LOGO"
+else if(i==13) label=team+" 13 - EQUIPO"
+else label=team+" "+i+" - @"
+
+if(!data[label]) allMarked=false
+
+}
+
+for(let i=1;i<=20;i++){
+
+let label
+
+if(i==1) label=team+" 1 - LOGO"
+else if(i==13) label=team+" 13 - EQUIPO"
+else label=team+" "+i+" - @"
+
+if(allMarked)
+delete data[label]
+else
+data[label]=1
+
+}
+
+save()
+
+document.querySelectorAll(".sticker").forEach(s=>{
+updateSticker(s,s.innerText)
+})
+
+updateTeamTitle(team)
+updateStats()
+
+}
+
+function buildFWC(){
+
+let div=document.getElementById("fwc")
+let grid=document.createElement("div")
+grid.className="grid"
+
+for(let i=0;i<20;i++){
+sticker(grid,"FWC "+i)
+}
+
+div.appendChild(grid)
+
+}
+
+function buildCoca(){
+
+let div=document.getElementById("coca")
+let grid=document.createElement("div")
+grid.className="grid"
+
+for(let i=1;i<=14;i++){
+sticker(grid,"COCA "+i)
+}
+
+div.appendChild(grid)
+
+}
+
+const groups={
+A:["MEX","RSA","KOR","CZE"],
+B:["CAN","BIH","QAT","SUI"],
+C:["BRA","MAR","HAI","SCO"],
+D:["USA","PAR","AUS","TUR"],
+E:["GER","CUW","CIV","ECU"],
+F:["NED","JPN","SWE","TUN"],
+G:["BEL","EGY","IRN","NZL"],
+H:["ESP","CPV","KSA","URU"],
+I:["FRA","SEN","IRQ","NOR"],
+J:["ARG","ALG","AUT","JOR"],
+K:["POR","COD","UZB","COL"],
+L:["ENG","CRO","GHA","PAN"]
+}
+
+function buildTeams(){
+
+let container=document.getElementById("teams")
+
+for(let g in groups){
+
+let det=document.createElement("details")
+det.open=true
+
+let sum=document.createElement("summary")
+sum.innerText="GRUPO "+g
+
+det.appendChild(sum)
+
+let groupGrid=document.createElement("div")
+groupGrid.className="groupGrid"
+
+groups[g].forEach(team=>{
+
+let teamDiv=document.createElement("div")
+
+let count=countTeam(team)
+
+let title=document.createElement("div")
+title.className="teamTitle"
+title.dataset.team=team
+
+let full=teamNames[team]||""
+
+title.innerHTML=team+" - "+full+" ("+count+" / 20) <button onclick=\"markTeam('"+team+"')\">✔</button>"
+
+teamDiv.appendChild(title)
+
+let grid=document.createElement("div")
+grid.className="grid"
+
+for(let i=1;i<=20;i++){
+
+let label
+
+if(i==1) label=team+" 1 - LOGO"
+else if(i==13) label=team+" 13 - EQUIPO"
+else label=team+" "+i+" - @"
+
+sticker(grid,label)
+
+}
+
+teamDiv.appendChild(grid)
+groupGrid.appendChild(teamDiv)
+
+})
+
+det.appendChild(groupGrid)
+container.appendChild(det)
+
+}
+
+}
+
+function buildDuplicates(){
+
+let div=document.getElementById("duplicates")
+div.innerHTML="<h3>Repetidas</h3>"
+
+for(let key in data){
+
+if(data[key]>1){
+
+let p=document.createElement("p")
+p.innerText=key+" x"+data[key]
+
+div.appendChild(p)
+
+}
+
+}
+
+}
+
+function updateStats(){
+
+let total=994
+let have=0
+
+for(let k in data){
+if(data[k]) have++
+}
+
+let percent=Math.floor(have/total*100)
+
+document.getElementById("stats").innerHTML=`
+
+<h2>Resumen</h2>
+
+<p>${have} / ${total}</p>
+
+<div class="progress">
+<div class="bar" style="width:${percent}%"></div>
+</div>
+
+<p>${percent}%</p>
+
+`
+
+buildDuplicates()
+
+}
+
+function toggleMissing(){
+
+onlyMissing=!onlyMissing
+
+document.querySelectorAll(".sticker").forEach(s=>{
+
+let label=s.innerText
+
+if(onlyMissing && data[label])
+s.style.display="none"
+else
+s.style.display="block"
+
+})
+
+}
+
+function findSticker(){
+
+let text=document.getElementById("search").value.toUpperCase().trim()
+
+let parts=text.split(" ")
+
+if(parts.length<2){
+document.getElementById("searchResult").innerHTML="Formato: ARG 7"
+return
+}
+
+let team=parts[0]
+let num=parseInt(parts[1])
+
+let label
+
+if(num==1) label=team+" 1 - LOGO"
+else if(num==13) label=team+" 13 - EQUIPO"
+else label=team+" "+num+" - @"
+
+let count=data[label]||0
+
+let status="FALTANTE"
+if(count==1) status="TENÉS"
+if(count>1) status="TENÉS REPETIDA ("+count+")"
+
+document.getElementById("searchResult").innerHTML=`
+<b>${label}</b><br>
+Estado: ${status}<br><br>
+<button onclick="addSticker('${label}')">Marcar que la tengo</button>
+<button onclick="addDuplicate('${label}')">Agregar repetida</button>
+`
+
+}
+
+function addSticker(id){
+
+data[id]=1
+save()
+
+updateStats()
+
+}
+
+function addDuplicate(id){
+
+if(!data[id]) data[id]=1
+data[id]++
+
+save()
+
+updateStats()
+
+}
+
+function exportData(){
+
+let dataStr=JSON.stringify(data,null,2)
+
+let blob=new Blob([dataStr],{type:"application/json"})
+
+let a=document.createElement("a")
+
+a.href=URL.createObjectURL(blob)
+
+a.download="album2026.json"
+
+a.click()
+
+}
+
+function importData(event){
+
+let file=event.target.files[0]
+
+let reader=new FileReader()
+
+reader.onload=function(e){
+
+data=JSON.parse(e.target.result)
+
+save()
+
+location.reload()
+
+}
+
+reader.readAsText(file)
+
+}
+
+function printMissing(){
+
+let html="<h2>Faltantes</h2>"
+
+Object.keys(groups).forEach(g=>{
+
+groups[g].forEach(team=>{
+
+let missing=[]
+
+for(let i=1;i<=20;i++){
+
+let label
+
+if(i==1) label=team+" 1 - LOGO"
+else if(i==13) label=team+" 13 - EQUIPO"
+else label=team+" "+i+" - @"
+
+if(!data[label]) missing.push(i)
+
+}
+
+if(missing.length==0)
+html+="<p>"+team+": COMPLETO</p>"
+else
+html+="<p>"+team+": "+missing.join(", ")+"</p>"
+
+})
+
+})
+
+let w=window.open("")
+
+w.document.write("<html><head><title>Faltantes</title></head><body>"+html+"</body></html>")
+
+w.print()
+
+}
+
+function openTab(e,id){
+
+document.querySelectorAll(".page").forEach(p=>p.classList.remove("show"))
+document.getElementById(id).classList.add("show")
+
+document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"))
+e.target.classList.add("active")
+
+}
+
+buildFWC()
+buildCoca()
+buildTeams()
+updateStats()
+
+</script>
+
+</body>
+</html>
