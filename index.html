@@ -2,6 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tracker Álbum Mundial 2026</title>
 
 <style>
@@ -42,11 +43,13 @@ cursor:pointer;
 
 .tabs{
 display:flex;
+flex-wrap:wrap;
 background:#111;
 }
 
 .tab{
-flex:1;
+flex:1 1 20%;
+min-width:120px;
 padding:10px;
 text-align:center;
 color:white;
@@ -76,8 +79,14 @@ border-radius:6px;
 
 .groupGrid{
 display:grid;
-grid-template-columns:1fr 1fr;
+grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
 gap:20px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(55px,1fr));
+gap:4px;
 }
 
 .teamTitle{
@@ -93,16 +102,10 @@ align-items:center;
 color:#1db954;
 }
 
-.grid{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:3px;
-}
-
 .sticker{
 background:#ddd;
-font-size:11px;
-padding:6px;
+font-size:clamp(11px,1.2vw,14px);
+padding:clamp(6px,0.8vw,10px);
 border-radius:4px;
 cursor:pointer;
 }
@@ -168,19 +171,15 @@ navigator.serviceWorker.register("service-worker.js");
 <header>Tracker Álbum Mundial 2026</header>
 
 <div class="controls">
-
-<input id="search" placeholder="ARG 7">
+<input id="search" placeholder="ARG 17" oninput="findSticker()">
 <button onclick="findSticker()">Buscar</button>
-
 <button onclick="toggleMissing()">Solo faltantes</button>
-
 <button onclick="exportData()">Exportar</button>
-
 <input type="file" id="importFile" style="display:none" onchange="importData(event)">
 <button onclick="document.getElementById('importFile').click()">Importar</button>
-
 <button onclick="printMissing()">Imprimir faltantes</button>
-
+<div id="searchResult" class="searchBox">
+Buscá una figurita para ver su estado.
 </div>
 
 <div class="tabs">
@@ -199,34 +198,72 @@ navigator.serviceWorker.register("service-worker.js");
 <div id="duplicates" class="page"></div>
 <div id="stats" class="page"></div>
 
-<div id="searchResult" class="searchBox"></div>
-
 <script>
 
 let onlyMissing=false
 let data=JSON.parse(localStorage.getItem("album2026"))||{}
 
 const teamNames={
-ARG:"ARGENTINA",
-BRA:"BRAZIL",
-MEX:"MEXICO",
-GER:"GERMANY",
-FRA:"FRANCE",
-ESP:"SPAIN",
-ENG:"ENGLAND",
-POR:"PORTUGAL",
-NED:"NETHERLANDS",
-BEL:"BELGIUM",
-USA:"UNITED STATES",
-URU:"URUGUAY",
-COL:"COLOMBIA",
-PAR:"PARAGUAY",
-ECU:"ECUADOR",
-JPN:"JAPAN",
-SWE:"SWEDEN",
-SUI:"SWITZERLAND",
-CRO:"CROATIA",
-CAN:"CANADA"
+
+MEX:"México",
+RSA:"Sudáfrica",
+KOR:"Corea del Sur",
+CZE:"República Checa",
+
+CAN:"Canadá",
+BIH:"Bosnia y Herzegovina",
+QAT:"Qatar",
+SUI:"Suiza",
+
+BRA:"Brasil",
+MAR:"Marruecos",
+HAI:"Haití",
+SCO:"Escocia",
+
+USA:"Estados Unidos",
+PAR:"Paraguay",
+AUS:"Australia",
+TUR:"Turquía",
+
+GER:"Alemania",
+CUW:"Curazao",
+CIV:"Costa de Marfil",
+ECU:"Ecuador",
+
+NED:"Países Bajos",
+JPN:"Japón",
+SWE:"Suecia",
+TUN:"Túnez",
+
+BEL:"Bélgica",
+EGY:"Egipto",
+IRN:"Irán",
+NZL:"Nueva Zelanda",
+
+ESP:"España",
+CPV:"Cabo Verde",
+KSA:"Arabia Saudita",
+URU:"Uruguay",
+
+FRA:"Francia",
+SEN:"Senegal",
+IRQ:"Irak",
+NOR:"Noruega",
+
+ARG:"Argentina",
+ALG:"Argelia",
+AUT:"Austria",
+JOR:"Jordania",
+
+POR:"Portugal",
+COD:"Congo",
+UZB:"Uzbekistán",
+COL:"Colombia",
+
+ENG:"Inglaterra",
+CRO:"Croacia",
+GHA:"Ghana",
+PAN:"Panamá"
 }
 
 function save(){
@@ -533,27 +570,26 @@ s.style.display="block"
 }
 
 function findSticker(){
-
 let text=document.getElementById("search").value.toUpperCase().trim()
+if(text===""){
+document.getElementById("searchResult").innerHTML="Buscá una figurita (ej: ARG 17)"
+return
+}
+
 
 let parts=text.split(" ")
-
-if(parts.length<2){
-document.getElementById("searchResult").innerHTML="Formato: ARG 7"
+if(parts.length<2 || isNaN(parseInt(parts[1]))){
+document.getElementById("searchResult").innerHTML="Formato: ARG 17"
 return
 }
 
 let team=parts[0]
 let num=parseInt(parts[1])
-
 let label
-
 if(num==1) label=team+" 1 - LOGO"
 else if(num==13) label=team+" 13 - EQUIPO"
 else label=team+" "+num+" - @"
-
 let count=data[label]||0
-
 let status="FALTANTE"
 if(count==1) status="TENÉS"
 if(count>1) status="TENÉS REPETIDA ("+count+")"
