@@ -1,5 +1,13 @@
 const CACHE_NAME = "album2026-cache";
 
+self.addEventListener("install", e => {
+self.skipWaiting();
+});
+
+self.addEventListener("activate", e => {
+self.clients.claim();
+});
+
 const urlsToCache = [
 "./",
 "./index.html"
