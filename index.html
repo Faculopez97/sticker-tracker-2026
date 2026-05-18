@@ -7,6 +7,42 @@
 
 <style>
 
+.albumTeam{
+margin-bottom:20px;
+}
+.albumPages{
+display:flex;
+gap:20px;
+}
+.albumPage{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+grid-template-rows:repeat(3,60px);
+gap:6px;
+}
+.albumSticker{
+background:#eee;
+border-radius:6px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+font-size:11px;
+}
+.albumEmpty{
+visibility:hidden;
+}
+.repControls{
+display:flex;
+align-items:center;
+gap:6px;
+}
+.repBtn{
+width:18px;
+height:18px;
+font-size:12px;
+}
+  
 body{
 font-family:Arial;
 margin:0;
@@ -503,23 +539,115 @@ container.appendChild(det)
 
 }
 
+function createDuplicateSticker(label,num){
+
+let count=data[label]||0
+
+let div=document.createElement("div")
+div.className="albumSticker"
+
+div.innerHTML=`
+
+<div class="repControls">
+<button class="repBtn" onclick="removeDuplicate('${label}')">-</button>
+<span>${count}</span>
+<button class="repBtn" onclick="addDuplicate('${label}')">+</button>
+</div>
+
+<div>${num}</div>
+
+<button onclick="deleteDuplicate('${label}')">x</button>
+
+`
+
+return div
+}
+
+  
 function buildDuplicates(){
 
 let div=document.getElementById("duplicates")
-div.innerHTML="<h3>Repetidas</h3>"
 
-for(let key in data){
+div.innerHTML="<h2>Repetidas</h2>"
 
-if(data[key]>1){
+Object.keys(groups).forEach(g=>{
 
-let p=document.createElement("p")
-p.innerText=key+" x"+data[key]
+groups[g].forEach(team=>{
 
-div.appendChild(p)
+let teamBox=document.createElement("div")
+teamBox.className="albumTeam"
 
+teamBox.innerHTML="<h3>"+team+"</h3>"
+
+let pages=document.createElement("div")
+pages.className="albumPages"
+
+let left=document.createElement("div")
+left.className="albumPage"
+
+let right=document.createElement("div")
+right.className="albumPage"
+
+let leftLayout=[
+null,null,1,2,
+3,4,5,6,
+7,8,9,10
+]
+
+let rightLayout=[
+11,12,null,13,
+14,15,16,17,
+null,18,19,20
+]
+
+leftLayout.forEach(n=>{
+
+if(n===null){
+let e=document.createElement("div")
+e.className="albumEmpty"
+left.appendChild(e)
+return
 }
 
+let label
+
+if(n==1) label=team+" 1 - LOGO"
+else if(n==13) label=team+" 13 - EQUIPO"
+else label=team+" "+n+" - @"
+
+left.appendChild(createDuplicateSticker(label,n))
+
+})
+
+rightLayout.forEach(n=>{
+
+if(n===null){
+let e=document.createElement("div")
+e.className="albumEmpty"
+right.appendChild(e)
+return
 }
+
+let label
+
+if(n==1) label=team+" 1 - LOGO"
+else if(n==13) label=team+" 13 - EQUIPO"
+else label=team+" "+n+" - @"
+
+right.appendChild(createDuplicateSticker(label,n))
+
+})
+
+pages.appendChild(left)
+pages.appendChild(right)
+
+teamBox.appendChild(pages)
+
+div.appendChild(teamBox)
+
+})
+
+})
 
 }
 
@@ -534,7 +662,7 @@ if(data[k]) have++
 
 let percent=Math.floor(have/total*100)
 
-document.getElementById("stats").innerHTML=`
+let html=`
 
 <h2>Resumen</h2>
 
@@ -546,7 +674,48 @@ document.getElementById("stats").innerHTML=`
 
 <p>${percent}%</p>
 
+<h3>Selecciones completas</h3>
 `
+
+let complete=[]
+let missingTeams=[]
+
+Object.keys(groups).forEach(g=>{
+
+groups[g].forEach(team=>{
+
+let missing=0
+
+for(let i=1;i<=20;i++){
+
+let label
+
+if(i==1) label=team+" 1 - LOGO"
+else if(i==13) label=team+" 13 - EQUIPO"
+else label=team+" "+i+" - @"
+
+if(!data[label]) missing++
+
+}
+
+if(missing==0)
+complete.push(team)
+else
+missingTeams.push(team+" ("+missing+")")
+
+})
+
+})
+
+html+="<p>"+complete.join(", ")+"</p>"
+
+html+="<h3>Faltantes por selección</h3>"
+
+missingTeams.forEach(t=>{
+html+="<p>"+t+"</p>"
+})
+
+document.getElementById("stats").innerHTML=html
 
 buildDuplicates()
 
