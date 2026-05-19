@@ -550,7 +550,7 @@ div.innerHTML=`
 
 <div class="repControls">
 <button class="repBtn" onclick="removeDuplicate('${label}')">-</button>
-<span>${count}</span>
+<span>${count>1 ? count-1 : 0}</span>
 <button class="repBtn" onclick="addDuplicate('${label}')">+</button>
 </div>
 
