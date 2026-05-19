@@ -781,17 +781,29 @@ updateStats()
 
 }
 
-function addDuplicate(id){
+function removeDuplicate(id){
 
-if(!data[id]) data[id]=1
-data[id]++
+if(!data[id]) return
+
+data[id]--
+
+if(data[id] <= 1){
+data[id] = 1
+}
 
 save()
-
 updateStats()
 
 }
 
+function deleteDuplicate(id){
+
+delete data[id]
+
+save()
+updateStats()
+
+}
 function exportData(){
 
 let dataStr=JSON.stringify(data,null,2)
