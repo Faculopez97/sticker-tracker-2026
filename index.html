@@ -649,9 +649,16 @@ let count=countTeam(team)
 
 let full=teamNames[team] || ""
 
+let pages=teamPages[team] || ""
+
 title.innerHTML=`
 <div>
-${team} - ${full} (${count} / 20)
+${team} - ${full}
+<span style="font-size:11px;color:#666">
+(Pág. ${pages})
+</span>
+<br>
+${count} / 20
 </div>
 
 <button onclick="markTeam('${team}')">✔</button>
