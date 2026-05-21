@@ -753,8 +753,6 @@ updateStats()
 save()
 updateStats()
 
-}
-
 function createDuplicateSticker(label,num){
 
 let count=data[label]||0
@@ -1002,8 +1000,22 @@ if(count==1) status="TENÉS"
 
 if(count>1) status="TENÉS REPETIDA ("+(count-1)+")"
 
-document.getElementById
+document.getElementById("searchResult").innerHTML=`
 
+<b>${label}</b><br>
+
+Estado: ${status}<br><br>
+
+<button onclick="addSticker('${label}')">
+Marcar que la tengo
+</button>
+
+${count>=1 ? `
+<button onclick="addDuplicate('${label}')">
+Agregar repetida
+</button>
+` : ""}
+`
 }
 
 function exportData(){
