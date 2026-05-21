@@ -575,9 +575,22 @@ title.className="teamTitle"
 
 title.dataset.team=team
 
-teamDiv.appendChild(title)
+let count=countTeam(team)
 
-updateTeamTitle(team)
+let full=teamNames[team] || ""
+
+title.innerHTML=`
+<div>
+${team} - ${full} (${count} / 20)
+</div>
+
+<button onclick="markTeam('${team}')">✔</button>
+`
+
+if(count==20)
+title.classList.add("teamComplete")
+
+teamDiv.appendChild(title)
 
 let grid=document.createElement("div")
 
