@@ -728,9 +728,8 @@ function removeDuplicate(id){
 
 if(!data[id]) return
 
-if(data[id]>1){
+if(data[id] > 1)
 data[id]--
-}
 
 save()
 
@@ -740,10 +739,15 @@ updateStats()
 
 function deleteDuplicate(id){
 
-if(data[id]>1){
+if(!data[id]) return
+
+if(data[id] > 1)
 data[id]=1
-}else{
-delete data[id]
+
+save()
+
+updateStats()
+
 }
 
 save()
@@ -770,7 +774,24 @@ div.classList.add("hasRepeated")
 if(!hasSticker){
 
 div.innerHTML=`
-<div class="repNumber">${num}</div>
+
+<div>${num}</div>
+
+<div class="repControls">
+
+${repeats>0 ? `
+<button class="repBtn" onclick="removeDuplicate('${label}')">-</button>
+` : ""}
+
+<span>${repeats}</span>
+
+<button class="repBtn" onclick="addDuplicate('${label}')">+</button>
+
+${repeats>0 ? `
+<button class="repDelete" onclick="deleteDuplicate('${label}')">✕</button>
+` : ""}
+
+</div>
 `
 
 return div
