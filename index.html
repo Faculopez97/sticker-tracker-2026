@@ -148,31 +148,29 @@ margin-bottom:20px;
 }
 
 .albumPages{
-display:flex;
-gap:20px;
-flex-wrap:wrap;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:18px;
 }
 
 .albumPage{
 display:grid;
-grid-template-columns:repeat(4,1fr);
-grid-template-rows:repeat(3,60px);
-gap:6px;
+grid-template-columns:repeat(5,1fr);
+gap:8px;
 }
 
 .albumSticker{
 background:#fff;
-border-radius:12px;
+border-radius:14px;
 display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-font-size:13px;
-padding:8px;
-box-shadow:0 2px 6px rgba(0,0,0,.08);
-border:1px solid #ddd;
+padding:10px;
+min-height:85px;
 position:relative;
-min-height:70px;
+box-shadow:0 2px 8px rgba(0,0,0,.08);
+border:1px solid #ddd;
 }
 
 .albumEmpty{
@@ -182,18 +180,18 @@ visibility:hidden;
 .repControls{
 display:flex;
 align-items:center;
-gap:8px;
-margin-bottom:4px;
+gap:10px;
+margin-bottom:8px;
 }
 
 .repBtn{
-width:28px;
-height:28px;
+width:30px;
+height:30px;
 border:none;
-border-radius:8px;
+border-radius:10px;
 background:#e10600;
 color:#fff;
-font-size:16px;
+font-size:18px;
 font-weight:bold;
 cursor:pointer;
 }
@@ -203,29 +201,29 @@ opacity:.9;
 }
 
 .repCount{
-font-size:16px;
-font-weight:bold;
-min-width:20px;
+min-width:24px;
 text-align:center;
+font-size:17px;
+font-weight:bold;
 }
 
 .repDelete{
 position:absolute;
-top:5px;
-right:5px;
-width:20px;
-height:20px;
+top:6px;
+right:6px;
+width:22px;
+height:22px;
 border:none;
 border-radius:50%;
-background:#333;
+background:#222;
 color:#fff;
-font-size:11px;
+font-size:12px;
 cursor:pointer;
 }
 
 .repNumber{
+font-size:15px;
 font-weight:bold;
-font-size:14px;
 }
 
 
@@ -463,12 +461,16 @@ let count=countTeam(team)
 
 title.classList.remove("teamComplete")
 
-if(count==20){
+if(count==20)
 title.classList.add("teamComplete")
-}
+
+let full=teamNames[team] || ""
 
 title.innerHTML=`
-${team} - ${teamNames[team]} (${count} / 20)
+<div>
+${team} - ${full} (${count} / 20)
+</div>
+
 <button onclick="markTeam('${team}')">✔</button>
 `
 
@@ -697,83 +699,70 @@ let div=document.getElementById("duplicates")
 
 div.innerHTML="<h2>Repetidas</h2>"
 
+function createSection(title,prefix,total){
+
+let section=document.createElement("div")
+
+section.className="albumTeam"
+
+section.innerHTML=`<h3>${title}</h3>`
+
+let page=document.createElement("div")
+
+page.className="albumPage"
+
+for(let i=1;i<=total;i++){
+
+let label
+
+if(prefix=="FWC"){
+label="FWC "+(i-1)
+}else{
+label=prefix+" "+i
+}
+
+page.appendChild(createDuplicateSticker(label,i))
+
+}
+
+section.appendChild(page)
+
+div.appendChild(section)
+
+}
+
+createSection("FWC","FWC",20)
+
+createSection("COCA COLA","COCA",14)
+
 Object.keys(groups).forEach(g=>{
 
 groups[g].forEach(team=>{
 
-let teamBox=document.createElement("div")
+let section=document.createElement("div")
 
-teamBox.className="albumTeam"
+section.className="albumTeam"
 
-teamBox.innerHTML="<h3>"+team+"</h3>"
+section.innerHTML=`<h3>${team} - ${teamNames[team]}</h3>`
 
-let pages=document.createElement("div")
+let page=document.createElement("div")
 
-pages.className="albumPages"
+page.className="albumPage"
 
-let left=document.createElement("div")
+for(let i=1;i<=20;i++){
 
-left.className="albumPage"
-
-let right=document.createElement("div")
-
-right.className="albumPage"
-
-let leftLayout=[
-null,null,1,2,
-3,4,5,6,
-7,8,9,10
-]
-
-let rightLayout=[
-11,12,null,13,
-14,15,16,17,
-null,18,19,20
-]
-
-leftLayout.forEach(n=>{
-
-if(n===null){
-
-let e=document.createElement("div")
-
-e.className="albumEmpty"
-
-left.appendChild(e)
-
-return
+page.appendChild(
+createDuplicateSticker(
+stickerLabel(team,i),
+i
+)
+)
 
 }
 
-left.appendChild(createDuplicateSticker(stickerLabel(team,n),n))
+section.appendChild(page)
 
-})
-
-rightLayout.forEach(n=>{
-
-if(n===null){
-
-let e=document.createElement("div")
-
-e.className="albumEmpty"
-
-right.appendChild(e)
-
-return
-
-}
-
-right.appendChild(createDuplicateSticker(stickerLabel(team,n),n))
-
-})
-
-pages.appendChild(left)
-
-pages.appendChild(right)
-
-teamBox.appendChild(pages)
-
-div.appendChild(teamBox)
+div.appendChild(section)
 
 })
 
@@ -899,17 +888,7 @@ if(count==1) status="TENÉS"
 
 if(count>1) status="TENÉS REPETIDA ("+(count-1)+")"
 
-document.getElementById("searchResult").innerHTML=`
-
-<b>${label}</b><br>
-
-Estado: ${status}<br><br>
-
-<button onclick="addSticker('${label}')">Marcar que la tengo</button>
-
-<button onclick="addDuplicate('${label}')">Agregar repetida</button>
-
-`
+document.getElementById
 
 }
 
