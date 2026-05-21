@@ -759,7 +759,6 @@ function createDuplicateSticker(label,num){
 
 let count=data[label]||0
 let repeats=count>1 ? count-1 : 0
-let hasSticker=count>=1
 
 let div=document.createElement("div")
 
@@ -771,40 +770,28 @@ div.classList.add("haveSticker")
 if(count>1)
 div.classList.add("hasRepeated")
 
-if(!hasSticker){
+let minusBtn=""
+let deleteBtn=""
 
-div.innerHTML=`
+if(repeats>0){
 
-<div>${num}</div>
+minusBtn=`<button class="repBtn" onclick="removeDuplicate('${label}')">−</button>`
 
-<div class="repControls">
-
-${repeats>0 ? `
-<button class="repBtn" onclick="removeDuplicate('${label}')">-</button>
-` : ""}
-
-<span>${repeats}</span>
-
-<button class="repBtn" onclick="addDuplicate('${label}')">+</button>
-
-${repeats>0 ? `
-<button class="repDelete" onclick="deleteDuplicate('${label}')">✕</button>
-` : ""}
-
-</div>
-`
-
-return div
+deleteBtn=`<button class="repDelete" onclick="deleteDuplicate('${label}')">✕</button>`
 
 }
 
 div.innerHTML=`
 
-<button class="repDelete" onclick="deleteDuplicate('${label}')">×</button>
+<div class="repTop">
+
+${deleteBtn}
+
+</div>
 
 <div class="repControls">
 
-<button class="repBtn" onclick="removeDuplicate('${label}')">−</button>
+${minusBtn}
 
 <div class="repCount">${repeats}</div>
 
