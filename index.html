@@ -826,15 +826,17 @@ page.className="albumPage"
 for(let i=1;i<=total;i++){
 
 let label
+let displayNum=i
 
 if(prefix=="FWC"){
 label="FWC "+(i-1)
+displayNum=i-1
 }else{
 label=prefix+" "+i
 }
 
-page.appendChild(createDuplicateSticker(label,i))
-
+page.appendChild(createDuplicateSticker(label,displayNum)
+)
 }
 
 section.appendChild(page)
