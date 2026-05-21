@@ -7,42 +7,6 @@
 
 <style>
 
-.albumTeam{
-margin-bottom:20px;
-}
-.albumPages{
-display:flex;
-gap:20px;
-}
-.albumPage{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-grid-template-rows:repeat(3,60px);
-gap:6px;
-}
-.albumSticker{
-background:#eee;
-border-radius:6px;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-font-size:11px;
-}
-.albumEmpty{
-visibility:hidden;
-}
-.repControls{
-display:flex;
-align-items:center;
-gap:6px;
-}
-.repBtn{
-width:18px;
-height:18px;
-font-size:12px;
-}
-  
 body{
 font-family:Arial;
 margin:0;
@@ -51,7 +15,7 @@ background:#f4f4f4;
 
 header{
 background:#e10600;
-color:white;
+color:#fff;
 padding:15px;
 text-align:center;
 font-size:22px;
@@ -59,7 +23,7 @@ font-weight:bold;
 }
 
 .controls{
-background:white;
+background:#fff;
 padding:10px;
 text-align:center;
 border-bottom:1px solid #ccc;
@@ -88,7 +52,7 @@ flex:1 1 20%;
 min-width:120px;
 padding:10px;
 text-align:center;
-color:white;
+color:#fff;
 cursor:pointer;
 font-size:14px;
 }
@@ -107,7 +71,7 @@ display:block;
 }
 
 details{
-background:white;
+background:#fff;
 margin-bottom:10px;
 padding:10px;
 border-radius:6px;
@@ -132,6 +96,8 @@ margin-bottom:6px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+gap:5px;
+flex-wrap:wrap;
 }
 
 .teamComplete{
@@ -144,6 +110,8 @@ font-size:clamp(11px,1.2vw,14px);
 padding:clamp(6px,0.8vw,10px);
 border-radius:4px;
 cursor:pointer;
+text-align:center;
+word-break:break-word;
 }
 
 .sticker.have{
@@ -159,12 +127,12 @@ height:20px;
 background:#ddd;
 border-radius:10px;
 margin-top:10px;
+overflow:hidden;
 }
 
 .bar{
 height:20px;
 background:#ffd500;
-border-radius:10px;
 width:0%;
 }
 
@@ -175,26 +143,80 @@ background:#fff;
 border-radius:6px;
 }
 
+.albumTeam{
+margin-bottom:20px;
+}
+
+.albumPages{
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+}
+
+.albumPage{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+grid-template-rows:repeat(3,60px);
+gap:6px;
+}
+
+.albumSticker{
+background:#eee;
+border-radius:6px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+font-size:11px;
+padding:4px;
+}
+
+.albumEmpty{
+visibility:hidden;
+}
+
+.repControls{
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.repBtn{
+width:22px;
+height:22px;
+font-size:14px;
+}
+
+@media(max-width:700px){
+
+.tab{
+flex:1 1 50%;
+}
+
+.groupGrid{
+grid-template-columns:1fr;
+}
+
+.albumPages{
+flex-direction:column;
+}
+
+}
+
 @media print{
-button{display:none;}
+button{
+display:none;
+}
 }
 
 </style>
-
-<script>
-if ("serviceWorker" in navigator) {
-window.addEventListener("load", () => {
-navigator.serviceWorker.register("service-worker.js");
-});
-}
-</script>
 
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#e10600">
 
 <script>
-if ("serviceWorker" in navigator) {
-window.addEventListener("load", () => {
+if("serviceWorker" in navigator){
+window.addEventListener("load",()=>{
 navigator.serviceWorker.register("service-worker.js");
 });
 }
@@ -207,25 +229,35 @@ navigator.serviceWorker.register("service-worker.js");
 <header>Tracker Álbum Mundial 2026</header>
 
 <div class="controls">
+
 <input id="search" placeholder="ARG 17" oninput="findSticker()">
+
 <button onclick="findSticker()">Buscar</button>
+
 <button onclick="toggleMissing()">Solo faltantes</button>
-<button onclick="exportData()">Exportar</button>
+
+<button onclick="exportData()">Guardar</button>
+
 <input type="file" id="importFile" style="display:none" onchange="importData(event)">
-<button onclick="document.getElementById('importFile').click()">Importar</button>
+
+<button onclick="document.getElementById('importFile').click()">Cargar</button>
+
 <button onclick="printMissing()">Imprimir faltantes</button>
+
+<button onclick="printOwned()">Imprimir las que tengo</button>
+
 <div id="searchResult" class="searchBox">
 Buscá una figurita para ver su estado.
 </div>
 
-<div class="tabs">
+</div>
 
+<div class="tabs">
 <div class="tab active" onclick="openTab(event,'fwc')">FWC</div>
 <div class="tab" onclick="openTab(event,'teams')">SELECCIONES</div>
 <div class="tab" onclick="openTab(event,'coca')">COCA COLA</div>
 <div class="tab" onclick="openTab(event,'duplicates')">REPETIDAS</div>
 <div class="tab" onclick="openTab(event,'stats')">RESUMEN</div>
-
 </div>
 
 <div id="fwc" class="page show"></div>
@@ -237,91 +269,83 @@ Buscá una figurita para ver su estado.
 <script>
 
 let onlyMissing=false
+
 let data=JSON.parse(localStorage.getItem("album2026"))||{}
 
 const teamNames={
-
 MEX:"México",
 RSA:"Sudáfrica",
 KOR:"Corea del Sur",
 CZE:"República Checa",
-
 CAN:"Canadá",
 BIH:"Bosnia y Herzegovina",
 QAT:"Qatar",
 SUI:"Suiza",
-
 BRA:"Brasil",
 MAR:"Marruecos",
 HAI:"Haití",
 SCO:"Escocia",
-
 USA:"Estados Unidos",
 PAR:"Paraguay",
 AUS:"Australia",
 TUR:"Turquía",
-
 GER:"Alemania",
 CUW:"Curazao",
 CIV:"Costa de Marfil",
 ECU:"Ecuador",
-
 NED:"Países Bajos",
 JPN:"Japón",
 SWE:"Suecia",
 TUN:"Túnez",
-
 BEL:"Bélgica",
 EGY:"Egipto",
 IRN:"Irán",
 NZL:"Nueva Zelanda",
-
 ESP:"España",
 CPV:"Cabo Verde",
 KSA:"Arabia Saudita",
 URU:"Uruguay",
-
 FRA:"Francia",
 SEN:"Senegal",
 IRQ:"Irak",
 NOR:"Noruega",
-
 ARG:"Argentina",
 ALG:"Argelia",
 AUT:"Austria",
 JOR:"Jordania",
-
 POR:"Portugal",
 COD:"Congo",
 UZB:"Uzbekistán",
 COL:"Colombia",
-
 ENG:"Inglaterra",
 CRO:"Croacia",
 GHA:"Ghana",
 PAN:"Panamá"
 }
 
+const groups={
+A:["MEX","RSA","KOR","CZE"],
+B:["CAN","BIH","QAT","SUI"],
+C:["BRA","MAR","HAI","SCO"],
+D:["USA","PAR","AUS","TUR"],
+E:["GER","CUW","CIV","ECU"],
+F:["NED","JPN","SWE","TUN"],
+G:["BEL","EGY","IRN","NZL"],
+H:["ESP","CPV","KSA","URU"],
+I:["FRA","SEN","IRQ","NOR"],
+J:["ARG","ALG","AUT","JOR"],
+K:["POR","COD","UZB","COL"],
+L:["ENG","CRO","GHA","PAN"]
+}
+
 function save(){
 localStorage.setItem("album2026",JSON.stringify(data))
 }
 
-function toggleSticker(id,el){
-
-if(!data[id]) data[id]=1
-else data[id]=0
-
-updateSticker(el,id)
-
-save()
-
-let team=id.split(" ")[0]
-
-if(team!="FWC" && team!="COCA")
-updateTeamTitle(team)
-
-updateStats()
-
+function stickerLabel(team,num){
+if(num==1) return team+" 1 - LOGO"
+if(num==13) return team+" 13 - EQUIPO"
+return team+" "+num+" - @"
 }
 
 function updateSticker(el,id){
@@ -335,10 +359,31 @@ if(count>1) el.classList.add("repeated")
 
 }
 
+function toggleSticker(id,el){
+
+if(!data[id]) data[id]=1
+else delete data[id]
+
+updateSticker(el,id)
+
+save()
+
+let team=id.split(" ")[0]
+
+if(team!="FWC" && team!="COCA"){
+updateTeamTitle(team)
+}
+
+updateStats()
+
+}
+
 function sticker(parent,label){
 
 let s=document.createElement("div")
+
 s.className="sticker"
+
 s.innerText=label
 
 updateSticker(s,label)
@@ -355,11 +400,7 @@ let have=0
 
 for(let i=1;i<=20;i++){
 
-let label
-
-if(i==1) label=team+" 1 - LOGO"
-else if(i==13) label=team+" 13 - EQUIPO"
-else label=team+" "+i+" - @"
+let label=stickerLabel(team,i)
 
 if(data[label]) have++
 
@@ -379,14 +420,14 @@ let count=countTeam(team)
 
 title.classList.remove("teamComplete")
 
-if(count==20)
+if(count==20){
 title.classList.add("teamComplete")
+}
 
-let full=teamNames[team]||""
-
-title.innerHTML=team+" - "+full+" ("+count+" / 20) <button onclick=\"markTeam('"+team+"')\">✔</button>"
-
-title.dataset.team=team
+title.innerHTML=`
+${team} - ${teamNames[team]} (${count} / 20)
+<button onclick="markTeam('${team}')">✔</button>
+`
 
 }
 
@@ -400,11 +441,7 @@ let allMarked=true
 
 for(let i=1;i<=20;i++){
 
-let label
-
-if(i==1) label=team+" 1 - LOGO"
-else if(i==13) label=team+" 13 - EQUIPO"
-else label=team+" "+i+" - @"
+let label=stickerLabel(team,i)
 
 if(!data[label]) allMarked=false
 
@@ -412,16 +449,10 @@ if(!data[label]) allMarked=false
 
 for(let i=1;i<=20;i++){
 
-let label
+let label=stickerLabel(team,i)
 
-if(i==1) label=team+" 1 - LOGO"
-else if(i==13) label=team+" 13 - EQUIPO"
-else label=team+" "+i+" - @"
-
-if(allMarked)
-delete data[label]
-else
-data[label]=1
+if(allMarked) delete data[label]
+else data[label]=1
 
 }
 
@@ -432,6 +463,7 @@ updateSticker(s,s.innerText)
 })
 
 updateTeamTitle(team)
+
 updateStats()
 
 }
@@ -439,7 +471,9 @@ updateStats()
 function buildFWC(){
 
 let div=document.getElementById("fwc")
+
 let grid=document.createElement("div")
+
 grid.className="grid"
 
 for(let i=0;i<20;i++){
@@ -453,7 +487,9 @@ div.appendChild(grid)
 function buildCoca(){
 
 let div=document.getElementById("coca")
+
 let grid=document.createElement("div")
+
 grid.className="grid"
 
 for(let i=1;i<=14;i++){
@@ -464,21 +500,6 @@ div.appendChild(grid)
 
 }
 
-const groups={
-A:["MEX","RSA","KOR","CZE"],
-B:["CAN","BIH","QAT","SUI"],
-C:["BRA","MAR","HAI","SCO"],
-D:["USA","PAR","AUS","TUR"],
-E:["GER","CUW","CIV","ECU"],
-F:["NED","JPN","SWE","TUN"],
-G:["BEL","EGY","IRN","NZL"],
-H:["ESP","CPV","KSA","URU"],
-I:["FRA","SEN","IRQ","NOR"],
-J:["ARG","ALG","AUT","JOR"],
-K:["POR","COD","UZB","COL"],
-L:["ENG","CRO","GHA","PAN"]
-}
-
 function buildTeams(){
 
 let container=document.getElementById("teams")
@@ -486,56 +507,102 @@ let container=document.getElementById("teams")
 for(let g in groups){
 
 let det=document.createElement("details")
+
 det.open=true
 
 let sum=document.createElement("summary")
+
 sum.innerText="GRUPO "+g
 
 det.appendChild(sum)
 
 let groupGrid=document.createElement("div")
+
 groupGrid.className="groupGrid"
 
 groups[g].forEach(team=>{
 
 let teamDiv=document.createElement("div")
 
-let count=countTeam(team)
-
 let title=document.createElement("div")
+
 title.className="teamTitle"
+
 title.dataset.team=team
-
-let full=teamNames[team]||""
-
-title.innerHTML=team+" - "+full+" ("+count+" / 20) <button onclick=\"markTeam('"+team+"')\">✔</button>"
 
 teamDiv.appendChild(title)
 
+updateTeamTitle(team)
+
 let grid=document.createElement("div")
+
 grid.className="grid"
 
 for(let i=1;i<=20;i++){
 
-let label
-
-if(i==1) label=team+" 1 - LOGO"
-else if(i==13) label=team+" 13 - EQUIPO"
-else label=team+" "+i+" - @"
-
-sticker(grid,label)
+sticker(grid,stickerLabel(team,i))
 
 }
 
 teamDiv.appendChild(grid)
+
 groupGrid.appendChild(teamDiv)
 
 })
 
 det.appendChild(groupGrid)
+
 container.appendChild(det)
 
 }
+
+}
+
+function addSticker(id){
+
+data[id]=1
+
+save()
+
+updateStats()
+
+}
+
+function addDuplicate(id){
+
+if(!data[id]) data[id]=1
+
+data[id]++
+
+save()
+
+updateStats()
+
+}
+
+function removeDuplicate(id){
+
+if(!data[id]) return
+
+if(data[id]>1){
+data[id]--
+}
+
+save()
+
+updateStats()
+
+}
+
+function deleteDuplicate(id){
+
+if(data[id]>1){
+data[id]=1
+}
+
+save()
+
+updateStats()
 
 }
 
@@ -543,14 +610,17 @@ function createDuplicateSticker(label,num){
 
 let count=data[label]||0
 
+let repeats=count>1 ? count-1 : 0
+
 let div=document.createElement("div")
+
 div.className="albumSticker"
 
 div.innerHTML=`
 
 <div class="repControls">
 <button class="repBtn" onclick="removeDuplicate('${label}')">-</button>
-<span>${count>1 ? count-1 : 0}</span>
+<span>${repeats}</span>
 <button class="repBtn" onclick="addDuplicate('${label}')">+</button>
 </div>
 
@@ -561,9 +631,9 @@ div.innerHTML=`
 `
 
 return div
+
 }
 
-  
 function buildDuplicates(){
 
 let div=document.getElementById("duplicates")
@@ -575,17 +645,21 @@ Object.keys(groups).forEach(g=>{
 groups[g].forEach(team=>{
 
 let teamBox=document.createElement("div")
+
 teamBox.className="albumTeam"
 
 teamBox.innerHTML="<h3>"+team+"</h3>"
 
 let pages=document.createElement("div")
+
 pages.className="albumPages"
 
 let left=document.createElement("div")
+
 left.className="albumPage"
 
 let right=document.createElement("div")
+
 right.className="albumPage"
 
 let leftLayout=[
@@ -603,42 +677,41 @@ null,18,19,20
 leftLayout.forEach(n=>{
 
 if(n===null){
+
 let e=document.createElement("div")
+
 e.className="albumEmpty"
+
 left.appendChild(e)
+
 return
+
 }
 
-let label
-
-if(n==1) label=team+" 1 - LOGO"
-else if(n==13) label=team+" 13 - EQUIPO"
-else label=team+" "+n+" - @"
-
-left.appendChild(createDuplicateSticker(label,n))
+left.appendChild(createDuplicateSticker(stickerLabel(team,n),n))
 
 })
 
 rightLayout.forEach(n=>{
 
 if(n===null){
+
 let e=document.createElement("div")
+
 e.className="albumEmpty"
+
 right.appendChild(e)
+
 return
+
 }
 
-let label
-
-if(n==1) label=team+" 1 - LOGO"
-else if(n==13) label=team+" 13 - EQUIPO"
-else label=team+" "+n+" - @"
-
-right.appendChild(createDuplicateSticker(label,n))
+right.appendChild(createDuplicateSticker(stickerLabel(team,n),n))
 
 })
 
 pages.appendChild(left)
+
 pages.appendChild(right)
 
 teamBox.appendChild(pages)
@@ -654,15 +727,46 @@ div.appendChild(teamBox)
 function updateStats(){
 
 let total=994
+
 let have=0
 
 for(let k in data){
+
 if(data[k]) have++
+
 }
 
 let percent=Math.floor(have/total*100)
 
-let html=`
+let complete=[]
+
+let missingTeams=[]
+
+Object.keys(groups).forEach(g=>{
+
+groups[g].forEach(team=>{
+
+let missing=0
+
+for(let i=1;i<=20;i++){
+
+let label=stickerLabel(team,i)
+
+if(!data[label]) missing++
+
+}
+
+if(missing==0){
+complete.push(team)
+}else{
+missingTeams.push(team+" ("+missing+")")
+}
+
+})
+
+})
+
+document.getElementById("stats").innerHTML=`
 
 <h2>Resumen</h2>
 
@@ -675,47 +779,14 @@ let html=`
 <p>${percent}%</p>
 
 <h3>Selecciones completas</h3>
+
+<p>${complete.join(", ")||"Ninguna"}</p>
+
+<h3>Faltantes por selección</h3>
+
+${missingTeams.map(t=>"<p>"+t+"</p>").join("")}
+
 `
-
-let complete=[]
-let missingTeams=[]
-
-Object.keys(groups).forEach(g=>{
-
-groups[g].forEach(team=>{
-
-let missing=0
-
-for(let i=1;i<=20;i++){
-
-let label
-
-if(i==1) label=team+" 1 - LOGO"
-else if(i==13) label=team+" 13 - EQUIPO"
-else label=team+" "+i+" - @"
-
-if(!data[label]) missing++
-
-}
-
-if(missing==0)
-complete.push(team)
-else
-missingTeams.push(team+" ("+missing+")")
-
-})
-
-})
-
-html+="<p>"+complete.join(", ")+"</p>"
-
-html+="<h3>Faltantes por selección</h3>"
-
-missingTeams.forEach(t=>{
-html+="<p>"+t+"</p>"
-})
-
-document.getElementById("stats").innerHTML=html
 
 buildDuplicates()
 
@@ -729,81 +800,62 @@ document.querySelectorAll(".sticker").forEach(s=>{
 
 let label=s.innerText
 
-if(onlyMissing && data[label])
-s.style.display="none"
-else
-s.style.display="block"
+s.style.display=(onlyMissing && data[label]) ? "none":"block"
 
 })
 
 }
 
 function findSticker(){
+
 let text=document.getElementById("search").value.toUpperCase().trim()
+
 if(text===""){
+
 document.getElementById("searchResult").innerHTML="Buscá una figurita (ej: ARG 17)"
+
 return
+
 }
 
-
 let parts=text.split(" ")
+
 if(parts.length<2 || isNaN(parseInt(parts[1]))){
+
 document.getElementById("searchResult").innerHTML="Formato: ARG 17"
+
 return
+
 }
 
 let team=parts[0]
+
 let num=parseInt(parts[1])
-let label
-if(num==1) label=team+" 1 - LOGO"
-else if(num==13) label=team+" 13 - EQUIPO"
-else label=team+" "+num+" - @"
+
+let label=stickerLabel(team,num)
+
 let count=data[label]||0
+
 let status="FALTANTE"
+
 if(count==1) status="TENÉS"
-if(count>1) status="TENÉS REPETIDA ("+count+")"
+
+if(count>1) status="TENÉS REPETIDA ("+(count-1)+")"
 
 document.getElementById("searchResult").innerHTML=`
+
 <b>${label}</b><br>
+
 Estado: ${status}<br><br>
+
 <button onclick="addSticker('${label}')">Marcar que la tengo</button>
+
 <button onclick="addDuplicate('${label}')">Agregar repetida</button>
+
 `
 
 }
 
-function addSticker(id){
-
-data[id]=1
-save()
-
-updateStats()
-
-}
-
-function removeDuplicate(id){
-
-if(!data[id]) return
-
-data[id]--
-
-if(data[id] <= 1){
-data[id] = 1
-}
-
-save()
-updateStats()
-
-}
-
-function deleteDuplicate(id){
-
-delete data[id]
-
-save()
-updateStats()
-
-}
 function exportData(){
 
 let dataStr=JSON.stringify(data,null,2)
@@ -852,20 +904,17 @@ let missing=[]
 
 for(let i=1;i<=20;i++){
 
-let label
-
-if(i==1) label=team+" 1 - LOGO"
-else if(i==13) label=team+" 13 - EQUIPO"
-else label=team+" "+i+" - @"
+let label=stickerLabel(team,i)
 
 if(!data[label]) missing.push(i)
 
 }
 
-if(missing.length==0)
+if(missing.length==0){
 html+="<p>"+team+": COMPLETO</p>"
-else
+}else{
 html+="<p>"+team+": "+missing.join(", ")+"</p>"
+}
 
 })
 
@@ -873,7 +922,43 @@ html+="<p>"+team+": "+missing.join(", ")+"</p>"
 
 let w=window.open("")
 
-w.document.write("<html><head><title>Faltantes</title></head><body>"+html+"</body></html>")
+w.document.write("<html><body>"+html+"</body></html>")
+
+w.print()
+
+}
+
+function printOwned(){
+
+let html="<h2>Figuritas que tengo</h2>"
+
+Object.keys(groups).forEach(g=>{
+
+groups[g].forEach(team=>{
+
+let owned=[]
+
+for(let i=1;i<=20;i++){
+
+let label=stickerLabel(team,i)
+
+if(data[label]) owned.push(i)
+
+}
+
+if(owned.length==20){
+html+="<p>"+team+": COMPLETO</p>"
+}else if(owned.length>0){
+html+="<p>"+team+": "+owned.join(", ")+"</p>"
+}
+
+})
+
+})
+
+let w=window.open("")
+
+w.document.write("<html><body>"+html+"</body></html>")
 
 w.print()
 
@@ -882,16 +967,21 @@ w.print()
 function openTab(e,id){
 
 document.querySelectorAll(".page").forEach(p=>p.classList.remove("show"))
+
 document.getElementById(id).classList.add("show")
 
 document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"))
+
 e.target.classList.add("active")
 
 }
 
 buildFWC()
+
 buildCoca()
+
 buildTeams()
+
 updateStats()
 
 </script>
