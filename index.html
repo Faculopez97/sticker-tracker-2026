@@ -364,6 +364,70 @@ GHA:"Ghana",
 PAN:"Panamá"
 }
 
+const teamPages={
+
+MEX:"8-9",
+RSA:"10-11",
+KOR:"12-13",
+CZE:"14-15",
+
+CAN:"16-17",
+BIH:"18-19",
+QAT:"20-21",
+SUI:"22-23",
+
+BRA:"24-25",
+MAR:"26-27",
+HAI:"28-29",
+SCO:"30-31",
+
+USA:"32-33",
+PAR:"34-35",
+AUS:"36-37",
+TUR:"38-39",
+
+GER:"40-41",
+CUW:"42-43",
+CIV:"44-45",
+ECU:"46-47",
+
+NED:"48-49",
+JPN:"50-51",
+SWE:"52-53",
+TUN:"54-55",
+
+BEL:"58-59",
+EGY:"60-61",
+IRN:"62-63",
+NZL:"64-65",
+
+ESP:"66-67",
+CPV:"68-69",
+KSA:"70-71",
+URU:"72-73",
+
+FRA:"74-75",
+SEN:"76-77",
+IRQ:"78-79",
+NOR:"80-81",
+
+ARG:"82-83",
+ALG:"84-85",
+AUT:"86-87",
+JOR:"88-89",
+
+POR:"90-91",
+COD:"92-93",
+UZB:"94-95",
+COL:"96-97",
+
+ENG:"98-99",
+CRO:"100-101",
+GHA:"102-103",
+PAN:"104-105"
+
+}
+  
 const groups={
 A:["MEX","RSA","KOR","CZE"],
 B:["CAN","BIH","QAT","SUI"],
@@ -465,10 +529,16 @@ if(count==20)
 title.classList.add("teamComplete")
 
 let full=teamNames[team] || ""
+let pages=teamPages[team] || ""
 
 title.innerHTML=`
 <div>
-${team} - ${full} (${count} / 20)
+${team} - ${full}
+<span style="font-size:11px;color:#666">
+(Pág. ${pages})
+</span>
+<br>
+${count} / 20
 </div>
 
 <button onclick="markTeam('${team}')">✔</button>
