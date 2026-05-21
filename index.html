@@ -161,14 +161,18 @@ gap:6px;
 }
 
 .albumSticker{
-background:#eee;
-border-radius:6px;
+background:#fff;
+border-radius:12px;
 display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
-font-size:11px;
-padding:4px;
+font-size:13px;
+padding:8px;
+box-shadow:0 2px 6px rgba(0,0,0,.08);
+border:1px solid #ddd;
+position:relative;
+min-height:70px;
 }
 
 .albumEmpty{
@@ -178,14 +182,53 @@ visibility:hidden;
 .repControls{
 display:flex;
 align-items:center;
-gap:6px;
+gap:8px;
+margin-bottom:4px;
 }
 
 .repBtn{
-width:22px;
-height:22px;
+width:28px;
+height:28px;
+border:none;
+border-radius:8px;
+background:#e10600;
+color:#fff;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.repBtn:hover{
+opacity:.9;
+}
+
+.repCount{
+font-size:16px;
+font-weight:bold;
+min-width:20px;
+text-align:center;
+}
+
+.repDelete{
+position:absolute;
+top:5px;
+right:5px;
+width:20px;
+height:20px;
+border:none;
+border-radius:50%;
+background:#333;
+color:#fff;
+font-size:11px;
+cursor:pointer;
+}
+
+.repNumber{
+font-weight:bold;
 font-size:14px;
 }
+
+
 
 @media(max-width:700px){
 
@@ -598,10 +641,11 @@ function deleteDuplicate(id){
 
 if(data[id]>1){
 data[id]=1
+}else{
+delete data[id]
 }
 
 save()
-
 updateStats()
 
 }
@@ -609,24 +653,37 @@ updateStats()
 function createDuplicateSticker(label,num){
 
 let count=data[label]||0
-
 let repeats=count>1 ? count-1 : 0
+let hasSticker=count>=1
 
 let div=document.createElement("div")
-
 div.className="albumSticker"
+
+if(!hasSticker){
+
+div.innerHTML=`
+<div class="repNumber">${num}</div>
+`
+
+return div
+
+}
 
 div.innerHTML=`
 
+<button class="repDelete" onclick="deleteDuplicate('${label}')">×</button>
+
 <div class="repControls">
-<button class="repBtn" onclick="removeDuplicate('${label}')">-</button>
-<span>${repeats}</span>
+
+<button class="repBtn" onclick="removeDuplicate('${label}')">−</button>
+
+<div class="repCount">${repeats}</div>
+
 <button class="repBtn" onclick="addDuplicate('${label}')">+</button>
+
 </div>
 
-<div>${num}</div>
-
-<button onclick="deleteDuplicate('${label}')">x</button>
+<div class="repNumber">${num}</div>
 
 `
 
