@@ -226,6 +226,15 @@ font-size:15px;
 font-weight:bold;
 }
 
+.haveSticker{
+background:#ffd500;
+}
+
+.hasRepeated{
+background:#ff9f43;
+border:2px solid #ff6b00;
+}
+
 
 
 @media(max-width:700px){
@@ -749,7 +758,14 @@ let repeats=count>1 ? count-1 : 0
 let hasSticker=count>=1
 
 let div=document.createElement("div")
+
 div.className="albumSticker"
+
+if(count==1)
+div.classList.add("haveSticker")
+
+if(count>1)
+div.classList.add("hasRepeated")
 
 if(!hasSticker){
 
