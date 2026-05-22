@@ -236,10 +236,16 @@ border:2px solid #ff6b00;
 }
 
 .quickNav{
+display:flex;
+flex-direction:column;
+gap:8px;
+margin-bottom:20px;
+}
+
+.quickRow{
 display:grid;
 grid-template-columns:repeat(12,minmax(55px,1fr));
 gap:8px;
-margin-bottom:20px;
 }
 
 .quickBtn{
@@ -252,6 +258,7 @@ font-size:12px;
 font-weight:bold;
 cursor:pointer;
 min-height:42px;
+transition:.2s;
 }
 
 .quickBtn:hover{
@@ -1444,27 +1451,52 @@ nav.className="quickNav"
 
 
 
-/* FWC */
+/* =========================
+FILA FWC
+========================= */
 
-nav.innerHTML+=`
+let rowFWC=document.createElement("div")
+
+rowFWC.className="quickRow"
+
+rowFWC.innerHTML=`
 <button class="quickBtn"
 onclick="scrollToSection('FWC')">
 FWC
 </button>
 `
 
+nav.appendChild(rowFWC)
 
 
-/* SELECCIONES */
+
+/* =========================
+FILAS SELECCIONES
+========================= */
+
+let allTeams=[]
 
 Object.keys(groups).forEach(g=>{
 
 groups[g].forEach(team=>{
 
-nav.innerHTML+=`
+allTeams.push(team)
+
+})
+
+})
+
+for(let i=0;i<allTeams.length;i+=12){
+
+let row=document.createElement("div")
+
+row.className="quickRow"
+
+allTeams.slice(i,i+12).forEach(team=>{
+
+row.innerHTML+=`
 
 <button class="quickBtn"
-
 onclick="scrollToSection('${team}')">
 
 ${team}
@@ -1475,18 +1507,28 @@ ${team}
 
 })
 
-})
+nav.appendChild(row)
+
+}
 
 
 
-/* CC */
+/* =========================
+FILA CC
+========================= */
 
-nav.innerHTML+=`
+let rowCC=document.createElement("div")
+
+rowCC.className="quickRow"
+
+rowCC.innerHTML=`
 <button class="quickBtn"
 onclick="scrollToSection('COCA')">
 CC
 </button>
 `
+
+nav.appendChild(rowCC)
 
 container.appendChild(nav)
 
@@ -1496,11 +1538,11 @@ function scrollToSection(id){
 
 let el=document.getElementById("section-"+id)
 
-if(el){
+if(!el) return
 
-el.scrollIntoView({
-behavior:"smooth",
-block:"start"
+window.scrollTo({
+top:el.getBoundingClientRect().top + window.scrollY - 80,
+behavior:"smooth"
 })
 
 el.classList.remove("flashSection")
@@ -1508,8 +1550,6 @@ el.classList.remove("flashSection")
 void el.offsetWidth
 
 el.classList.add("flashSection")
-
-}
 
 }
 
