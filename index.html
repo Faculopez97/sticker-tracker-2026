@@ -676,8 +676,6 @@ title.dataset.team=team
 
 teamDiv.appendChild(title)
 
-updateTeamTitle(team)
-
 let grid=document.createElement("div")
 
 grid.className="grid"
@@ -698,6 +696,8 @@ det.appendChild(groupGrid)
 
 container.appendChild(det)
 
+groups[g].forEach(team=>{
+updateTeamTitle(team)
 })
 
 let coca=document.createElement("details")
