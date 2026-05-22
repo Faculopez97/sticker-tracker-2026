@@ -1467,6 +1467,12 @@ function buildQuickNav(containerId){
 
 let container=document.getElementById(containerId)
 
+let oldNav=container.querySelector(".quickNav")
+
+if(oldNav){
+oldNav.remove()
+}
+
 let nav=document.createElement("div")
 
 nav.className="quickNav"
@@ -1474,26 +1480,30 @@ nav.className="quickNav"
 
 
 /* =========================
-FILA FWC
+FILA 1 - FWC
 ========================= */
 
-let rowFWC=document.createElement("div")
+let row1=document.createElement("div")
 
-rowFWC.className="quickRow"
+row1.className="quickRow"
 
-rowFWC.innerHTML=`
-<button class="quickBtn"
-onclick="scrollToSection('FWC')">
-FWC
-</button>
-`
+let btnFWC=document.createElement("button")
 
-nav.appendChild(rowFWC)
+btnFWC.className="quickBtn"
+
+btnFWC.innerText="FWC"
+
+btnFWC.onclick=()=>scrollToSection("FWC")
+
+row1.appendChild(btnFWC)
+
+nav.appendChild(row1)
 
 
 
 /* =========================
-FILAS SELECCIONES
+FILAS 2 A 5
+12 SELECCIONES
 ========================= */
 
 let allTeams=[]
@@ -1516,16 +1526,15 @@ row.className="quickRow"
 
 allTeams.slice(i,i+12).forEach(team=>{
 
-row.innerHTML+=`
+let btn=document.createElement("button")
 
-<button class="quickBtn"
-onclick="scrollToSection('${team}')">
+btn.className="quickBtn"
 
-${team}
+btn.innerText=team
 
-</button>
+btn.onclick=()=>scrollToSection(team)
 
-`
+row.appendChild(btn)
 
 })
 
@@ -1536,29 +1545,36 @@ nav.appendChild(row)
 
 
 /* =========================
-FILA CC
+FILA 6 - CC
 ========================= */
 
-let rowCC=document.createElement("div")
+let row6=document.createElement("div")
 
-rowCC.className="quickRow"
+row6.className="quickRow"
 
-rowCC.innerHTML=`
-<button class="quickBtn"
-onclick="scrollToSection('COCA')">
-CC
-</button>
-`
+let btnCC=document.createElement("button")
 
-nav.appendChild(rowCC)
+btnCC.className="quickBtn"
 
-container.appendChild(nav)
+btnCC.innerText="CC"
+
+btnCC.onclick=()=>scrollToSection("COCA")
+
+row6.appendChild(btnCC)
+
+nav.appendChild(row6)
+
+
+
+/* =========================
+AGREGAR ARRIBA
+========================= */
+
+container.prepend(nav)
 
 }
 
 function scrollToSection(id){
-
-setTimeout(()=>{
 
 let el=document.getElementById("section-"+id)
 
@@ -1574,8 +1590,6 @@ el.classList.remove("flashSection")
 void el.offsetWidth
 
 el.classList.add("flashSection")
-
-},50)
 
 }
 
