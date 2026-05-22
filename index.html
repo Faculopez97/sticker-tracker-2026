@@ -290,6 +290,23 @@ background:transparent;
 
 @media(max-width:700px){
 
+.quickRow{
+grid-template-columns:repeat(4,1fr);
+gap:6px;
+}
+
+.quickBtn{
+padding:8px 4px;
+font-size:10px;
+min-height:34px;
+border-radius:8px;
+}
+
+.quickNav{
+gap:6px;
+margin-bottom:14px;
+}
+
 .tab{
 flex:1 1 50%;
 }
@@ -1576,20 +1593,15 @@ container.prepend(nav)
 
 function scrollToSection(id){
 
+requestAnimationFrame(()=>{
+
+requestAnimationFrame(()=>{
+
 let el=document.getElementById("section-"+id)
 
-if(!el) return
-
-
-
-/* =========================
-ABRIR DETAILS SI EXISTE
-========================= */
-
-let details=el.closest("details")
-
-if(details){
-details.open=true
+if(!el){
+console.log("NO ENCONTRADO:",id)
+return
 }
 
 
@@ -1597,8 +1609,6 @@ details.open=true
 /* =========================
 SCROLL
 ========================= */
-
-setTimeout(()=>{
 
 el.scrollIntoView({
 behavior:"smooth",
@@ -1617,9 +1627,12 @@ void el.offsetWidth
 
 el.classList.add("flashSection")
 
-},100)
+})
+
+})
 
 }
+
 function openTab(e,id){
 
 document.querySelectorAll(".page").forEach(p=>p.classList.remove("show"))
