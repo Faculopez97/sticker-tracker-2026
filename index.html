@@ -1601,11 +1601,11 @@ container.prepend(nav)
 
 function scrollToSection(id){
 
-requestAnimationFrame(()=>{
+let activePage=document.querySelector(".page.show")
 
-requestAnimationFrame(()=>{
+if(!activePage) return
 
-let el=document.getElementById("section-"+id)
+let el=activePage.querySelector("#section-"+id)
 
 if(!el) return
 
@@ -1620,9 +1620,11 @@ void el.offsetWidth
 
 el.classList.add("flashSection")
 
-})
+setTimeout(()=>{
 
-})
+el.classList.remove("flashSection")
+
+},1000)
 
 }
 
