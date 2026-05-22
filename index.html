@@ -882,9 +882,22 @@ let div=document.getElementById("duplicates")
 
 div.innerHTML=""
 
-div.innerHTML+=`<h2>Repetidas</h2>`
+
+/* =========================
+TITULO
+========================= */
+
+let title=document.createElement("h2")
+
+title.innerText="Repetidas"
+
+div.appendChild(title)
 
 
+
+/* =========================
+CREAR SECCION
+========================= */
 
 function createSection(title,prefix,total){
 
@@ -995,7 +1008,6 @@ createSection("COCA COLA","COCA",14)
 
 /* =========================
 NAV FINAL
-IMPORTANTE: VA AL FINAL
 ========================= */
 
 buildQuickNav("duplicates")
