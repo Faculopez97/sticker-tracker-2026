@@ -626,7 +626,15 @@ function buildAlbum(){
 
 let container=document.getElementById("album")
 
+container.innerHTML=""
+
 buildQuickNav("album")
+
+
+
+/* =========================
+FWC
+========================= */
 
 let fwc=document.createElement("details")
 
@@ -649,6 +657,12 @@ sticker(fwcGrid,"FWC "+i)
 fwc.appendChild(fwcGrid)
 
 container.appendChild(fwc)
+
+
+
+/* =========================
+GRUPOS
+========================= */
 
 Object.keys(groups).forEach(g=>{
 
@@ -696,9 +710,29 @@ det.appendChild(groupGrid)
 
 container.appendChild(det)
 
-groups[g].forEach(team=>{
-updateTeamTitle(team)
 })
+
+
+
+/* =========================
+ACTUALIZAR TITULOS
+========================= */
+
+Object.keys(groups).forEach(g=>{
+
+groups[g].forEach(team=>{
+
+updateTeamTitle(team)
+
+})
+
+})
+
+
+
+/* =========================
+COCA COLA
+========================= */
 
 let coca=document.createElement("details")
 
@@ -721,16 +755,6 @@ sticker(cocaGrid,"COCA "+i)
 coca.appendChild(cocaGrid)
 
 container.appendChild(coca)
-
-}
-
-function addSticker(id){
-
-data[id]=1
-
-save()
-
-updateStats()
 
 }
 
