@@ -278,7 +278,7 @@ background:transparent;
 
 50%{
 box-shadow:0 0 30px rgba(225,6,0,.7);
-background:rgba(225,6,0,.08);
+background:rgba(225,6,0,.12);
 }
 
 100%{
@@ -1580,10 +1580,36 @@ let el=document.getElementById("section-"+id)
 
 if(!el) return
 
+
+
+/* =========================
+ABRIR DETAILS SI EXISTE
+========================= */
+
+let details=el.closest("details")
+
+if(details){
+details.open=true
+}
+
+
+
+/* =========================
+SCROLL
+========================= */
+
+setTimeout(()=>{
+
 el.scrollIntoView({
 behavior:"smooth",
 block:"start"
 })
+
+
+
+/* =========================
+DESTELLO
+========================= */
 
 el.classList.remove("flashSection")
 
@@ -1591,8 +1617,9 @@ void el.offsetWidth
 
 el.classList.add("flashSection")
 
-}
+},100)
 
+}
 function openTab(e,id){
 
 document.querySelectorAll(".page").forEach(p=>p.classList.remove("show"))
