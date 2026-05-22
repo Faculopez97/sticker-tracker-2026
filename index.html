@@ -724,74 +724,6 @@ container.appendChild(coca)
 
 }
 
-function buildAlbum(){
-
-let container=document.getElementById("album")
-
-container.innerHTML=""
-
-createQuickNav(container)
-
-buildFWC(container)
-
-for(let g in groups){
-
-let det=document.createElement("details")
-
-det.open=true
-
-let sum=document.createElement("summary")
-
-sum.innerText="GRUPO "+g
-
-det.appendChild(sum)
-
-let groupGrid=document.createElement("div")
-
-groupGrid.className="groupGrid"
-
-groups[g].forEach(team=>{
-
-let teamDiv=document.createElement("div")
-
-teamDiv.id="team-"+team
-
-let title=document.createElement("div")
-
-title.className="teamTitle"
-
-title.dataset.team=team
-
-teamDiv.appendChild(title)
-
-updateTeamTitle(team)
-
-let grid=document.createElement("div")
-
-grid.className="grid"
-
-for(let i=1;i<=20;i++){
-
-sticker(grid,stickerLabel(team,i))
-
-}
-
-teamDiv.appendChild(grid)
-
-groupGrid.appendChild(teamDiv)
-
-})
-
-det.appendChild(groupGrid)
-
-container.appendChild(det)
-
-}
-
-buildCoca(container)
-
-}
-
 function addSticker(id){
 
 data[id]=1
@@ -835,13 +767,9 @@ if(data[id] > 1)
 data[id]=1
 
 save()
-
 updateStats()
 
 }
-
-save()
-updateStats()
 
 function createDuplicateSticker(label,num){
 
@@ -897,15 +825,14 @@ return div
 
 function buildDuplicates(){
 
-buildQuickNav("duplicates")
+let div=document.getElementById("duplicates")
+
 div.innerHTML=""
 
 buildQuickNav("duplicates")
 
 div.innerHTML+=`<h2>Repetidas</h2>`
-
-let div=document.getElementById("duplicates")
-
+  
 function createSection(title,prefix,total){
 
 let section=document.createElement("div")
@@ -1502,7 +1429,6 @@ e.target.classList.add("active")
 }
 
 buildAlbum()
-
 updateStats()
 
 </script>
