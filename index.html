@@ -882,8 +882,6 @@ let div=document.getElementById("duplicates")
 
 div.innerHTML=""
 
-buildQuickNav("duplicates")
-
 div.innerHTML+=`<h2>Repetidas</h2>`
 
 
@@ -910,7 +908,6 @@ let displayNum=i
 if(prefix=="FWC"){
 
 label="FWC "+(i-1)
-
 displayNum=i-1
 
 }else{
@@ -942,18 +939,14 @@ createSection("FWC","FWC",20)
 
 
 /* =========================
-COCA COLA
-========================= */
-
-createSection("COCA COLA","COCA",14)
-
-
-
-/* =========================
 SELECCIONES
 ========================= */
 
 Object.keys(groups).forEach(g=>{
+
+let row=document.createElement("div")
+
+row.className="groupGrid"
 
 groups[g].forEach(team=>{
 
@@ -972,23 +965,40 @@ page.className="albumPage"
 for(let i=1;i<=20;i++){
 
 page.appendChild(
-
 createDuplicateSticker(
 stickerLabel(team,i),
 i
 )
-
 )
 
 }
 
 section.appendChild(page)
 
-div.appendChild(section)
+row.appendChild(section)
 
 })
 
+div.appendChild(row)
+
 })
+
+
+
+/* =========================
+COCA COLA
+========================= */
+
+createSection("COCA COLA","COCA",14)
+
+
+
+/* =========================
+NAV FINAL
+IMPORTANTE: VA AL FINAL
+========================= */
+
+buildQuickNav("duplicates")
 
 }
 
@@ -1536,13 +1546,15 @@ container.appendChild(nav)
 
 function scrollToSection(id){
 
+setTimeout(()=>{
+
 let el=document.getElementById("section-"+id)
 
 if(!el) return
 
-window.scrollTo({
-top:el.getBoundingClientRect().top + window.scrollY - 80,
-behavior:"smooth"
+el.scrollIntoView({
+behavior:"smooth",
+block:"start"
 })
 
 el.classList.remove("flashSection")
@@ -1550,6 +1562,8 @@ el.classList.remove("flashSection")
 void el.offsetWidth
 
 el.classList.add("flashSection")
+
+},50)
 
 }
 
