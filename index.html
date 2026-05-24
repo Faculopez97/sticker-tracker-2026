@@ -186,8 +186,10 @@ width:0%;
 .searchBox{
 margin-top:10px;
 padding:10px;
-background:#fff;
-border-radius:6px;
+background:var(--card);
+border-radius:10px;
+color:var(--text);
+border:1px solid rgba(255,255,255,.06);
 }
 
 .albumTeam{
@@ -195,7 +197,7 @@ margin-bottom:20px;
 scroll-margin-top:20px;
 padding:14px;
 border-radius:18px;
-border:2px solid rgba(0,0,0,.08);
+border:1px solid rgba(255,255,255,.08);
 background:rgba(255,255,255,.45);
 backdrop-filter:blur(2px);
 }
@@ -1898,6 +1900,8 @@ setTimeout(()=>{
 el.classList.remove("flashSection")
 
 },3000)
+
+}
 
 function openTab(e,id){
 
