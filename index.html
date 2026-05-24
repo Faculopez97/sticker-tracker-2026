@@ -7,44 +7,86 @@
 
 <style>
 
+:root{
+
+--bg:#10212b;
+--bg2:#162b36;
+--card:#1c3441;
+--card2:#244454;
+
+--text:#f2f5f7;
+--sub:#b8c7d1;
+
+--accent:#d62828;
+
+--have:#d9c65a;
+--haveBorder:#c2b14d;
+
+--repeat:#d98b3f;
+--repeatBorder:#c9721d;
+
+--button:#1f3d4d;
+--buttonHover:#2b5368;
+
+--input:#223c49;
+
+}
+
+
+  
 body{
 font-family:Arial;
 margin:0;
-background:#f4f4f4;
+background:var(--bg);
+color:var(--text);
 }
 
 header{
-background:#e10600;
+background:var(--accent);
 color:#fff;
 padding:15px;
 text-align:center;
 font-size:22px;
 font-weight:bold;
+box-shadow:0 2px 12px rgba(0,0,0,.25);
 }
 
 .controls{
-background:#fff;
+background:var(--bg2);
 padding:10px;
 text-align:center;
-border-bottom:1px solid #ccc;
+border-bottom:1px solid rgba(255,255,255,.08);
 }
 
 input{
-padding:6px;
+padding:8px;
 width:170px;
+background:var(--input);
+border:1px solid rgba(255,255,255,.08);
+border-radius:8px;
+color:var(--text);
 }
 
 button{
-padding:5px 8px;
+padding:6px 10px;
 font-size:12px;
 margin:3px;
 cursor:pointer;
+background:var(--button);
+color:#fff;
+border:none;
+border-radius:8px;
+transition:.2s;
+}
+
+button:hover{
+background:var(--buttonHover);
 }
 
 .tabs{
 display:flex;
 flex-wrap:wrap;
-background:#111;
+background:#0d1b22;
 }
 
 .tab{
@@ -58,7 +100,7 @@ font-size:14px;
 }
 
 .active{
-background:#e10600;
+background:var(--accent);
 }
 
 .page{
@@ -71,10 +113,11 @@ display:block;
 }
 
 details{
-background:#fff;
+background:var(--card);
 margin-bottom:10px;
 padding:10px;
-border-radius:6px;
+border-radius:10px;
+border:1px solid rgba(255,255,255,.06);
 }
 
 .groupGrid{
@@ -105,21 +148,25 @@ color:#1db954;
 }
 
 .sticker{
-background:#ddd;
+background:var(--card2);
 font-size:clamp(11px,1.2vw,14px);
 padding:clamp(6px,0.8vw,10px);
-border-radius:4px;
+border-radius:8px;
 cursor:pointer;
 text-align:center;
 word-break:break-word;
+color:var(--text);
+border:1px solid rgba(255,255,255,.05);
 }
 
 .sticker.have{
-background:#ffd500;
+background:var(--have);
+color:#111;
 }
 
 .sticker.repeated{
-background:#ffb347;
+background:var(--repeat);
+color:#fff;
 }
 
 .progress{
@@ -166,7 +213,8 @@ gap:14px;
 }
 
 .albumSticker{
-background:#fff;
+background:var(--card2);
+color:var(--text);
 border-radius:16px;
 display:flex;
 flex-direction:column;
@@ -257,12 +305,14 @@ margin-top:2px;
 }
 
 .haveSticker{
-background:#ffd500;
+background:var(--have);
+color:#111;
+border:2px solid var(--haveBorder);
 }
 
 .hasRepeated{
-background:#ff9f43;
-border:2px solid #ff6b00;
+background:var(--repeat);
+border:2px solid var(--repeatBorder);
 }
 
 .quickNav{
@@ -279,7 +329,7 @@ gap:8px;
 }
 
 .quickBtn{
-background:#111;
+background:#1a3340;
 color:#fff;
 border:none;
 padding:10px;
@@ -292,7 +342,7 @@ transition:.2s;
 }
 
 .quickBtn:hover{
-background:#e10600;
+background:var(--accent);
 }
 
 .flashSection{
