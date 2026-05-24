@@ -710,8 +710,32 @@ for(let i=1;i<=20;i++){
 
 let label=stickerLabel(team,i)
 
-if(allMarked) delete data[label]
-else data[label]=1
+let count=data[label]||0
+
+if(allMarked){
+
+/* =========================
+SI TIENE REPETIDAS
+DEJAR SOLO 1
+========================= */
+
+if(count>1){
+data[label]=count-1
+}else{
+delete data[label]
+}
+
+}else{
+
+/* =========================
+MARCAR SIN BORRAR REPETIDAS
+========================= */
+
+if(!data[label]){
+data[label]=1
+}
+
+}
 
 }
 
