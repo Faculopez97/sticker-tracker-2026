@@ -346,7 +346,7 @@ background:var(--accent);
 }
 
 .flashSection{
-animation:flashAnim 1s ease;
+animation:flashAnim 3.0s ease;
 }
 
 @keyframes flashAnim{
@@ -370,62 +370,115 @@ background:transparent;
 
 @media(max-width:700px){
 
-.quickRow{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(42px,1fr));
-gap:6px;
+.page{
+padding:10px;
 }
 
-.quickBtn{
-background:#111;
-color:#fff;
-border:none;
-padding:8px 4px;
-border-radius:10px;
-font-size:10px;
-font-weight:bold;
-cursor:pointer;
-min-height:38px;
-transition:.2s;
+.controls{
+padding:8px;
+}
+
+input{
+width:140px;
+font-size:13px;
+}
+
+button{
+font-size:11px;
+padding:6px 8px;
 }
 
 .quickNav{
-gap:6px;
-margin-bottom:14px;
+gap:5px;
+margin-bottom:12px;
 }
 
-.tab{
-flex:1 1 50%;
+/* =========================
+MENOS FILAS EN MOVIL
+========================= */
+
+.quickRow{
+display:flex;
+flex-wrap:wrap;
+gap:6px;
+justify-content:center;
 }
+
+.quickBtn{
+flex:0 0 auto;
+min-width:48px;
+padding:8px 6px;
+font-size:11px;
+min-height:36px;
+border-radius:9px;
+}
+
+/* =========================
+SECCIONES
+========================= */
 
 .groupGrid{
 grid-template-columns:1fr;
+gap:12px;
 }
 
-.albumPages{
-flex-direction:column;
+.albumTeam{
+padding:10px;
+border-radius:14px;
 }
+
+/* =========================
+FIGURITAS
+========================= */
 
 .albumPage{
-grid-template-columns:repeat(auto-fit,minmax(78px,1fr));
-gap:10px;
+grid-template-columns:repeat(auto-fit,minmax(74px,1fr));
+gap:8px;
 }
 
 .albumSticker{
-min-height:95px;
-padding:10px 6px;
+min-height:88px;
+padding:8px 4px;
+border-radius:12px;
+}
+
+.repControls{
+gap:5px;
+margin-bottom:8px;
 }
 
 .repBtn{
-width:28px;
-height:28px;
-min-width:28px;
-font-size:16px;
+width:26px;
+height:26px;
+min-width:26px;
+font-size:15px;
+}
+
+.repDelete{
+width:22px;
+height:22px;
+font-size:11px;
 }
 
 .repCount{
-font-size:15px;
+font-size:14px;
 min-width:18px;
+padding:2px 4px;
+}
+
+.repNumber{
+font-size:13px;
+}
+
+/* =========================
+TABS
+========================= */
+
+.tab{
+flex:1 1 33%;
+min-width:auto;
+font-size:12px;
+padding:10px 4px;
 }
 
 }
@@ -1169,10 +1222,15 @@ function updateStats(){
 let total=994
 
 let have=0
+let repeatedTotal=0
 
 for(let k in data){
 
 if(data[k]) have++
+
+if(data[k]>1){
+repeatedTotal+=(data[k]-1)
+}
 
 }
 
@@ -1180,11 +1238,18 @@ let percent=Math.floor(have/total*100)
 
 let complete=[]
 
-let missingTeams=[]
+let near1=[]
+let near2=[]
+let near3=[]
+let near5=[]
+
+let totalTeams=0
 
 Object.keys(groups).forEach(g=>{
 
 groups[g].forEach(team=>{
+
+totalTeams++
 
 let missing=0
 
@@ -1197,36 +1262,119 @@ if(!data[label]) missing++
 }
 
 if(missing==0){
+
 complete.push(team)
-}else{
-missingTeams.push(team+" ("+missing+")")
+
+}
+
+if(missing==1){
+near1.push(team)
+}
+
+if(missing==2){
+near2.push(team)
+}
+
+if(missing==3){
+near3.push(team)
+}
+
+if(missing<=5 && missing>3){
+near5.push(team)
 }
 
 })
 
 })
 
+let completedPercent=Math.floor(
+complete.length/totalTeams*100
+)
+
 document.getElementById("stats").innerHTML=`
 
 <h2>Resumen</h2>
 
-<p><b>Total conseguidas:</b> ${have}</p>
+<p>
+<b>Total conseguidas:</b>
+${have}
+</p>
 
-<p><b>Total faltantes:</b> ${total-have}</p>
+<p>
+<b>Total faltantes:</b>
+${total-have}
+</p>
 
-<p><b>Completado:</b> ${percent}%</p>
+<p>
+<b>Repetidas:</b>
+${repeatedTotal}
+</p>
+
+<p>
+<b>Completado:</b>
+${percent}%
+</p>
 
 <div class="progress">
 <div class="bar" style="width:${percent}%"></div>
 </div>
 
+<hr>
+
 <h3>Selecciones completas</h3>
 
-<p>${complete.join(", ")||"Ninguna"}</p>
+<p>
+${complete.join(", ") || "Ninguna"}
+</p>
 
-<h3>Total selecciones completas</h3>
+<p>
+<b>Total:</b>
+${complete.length} / ${totalTeams}
+(${completedPercent}%)
+</p>
 
-<p>${complete.length}</p>
+<hr>
+
+<h3>Cerca de completar</h3>
+
+<p>
+<b>Falta 1:</b>
+${near1.length ? near1.join(", ") : "Ninguna"}
+</p>
+
+<p>
+<b>Faltan 2:</b>
+${near2.length ? near2.join(", ") : "Ninguna"}
+</p>
+
+<p>
+<b>Faltan 3:</b>
+${near3.length ? near3.join(", ") : "Ninguna"}
+</p>
+
+<p>
+<b>Faltan 4-5:</b>
+${near5.length ? near5.join(", ") : "Ninguna"}
+</p>
+
+<hr>
+
+<h3>Ritmo del álbum</h3>
+
+<p>
+<b>Promedio por selección:</b>
+${Math.floor(have/totalTeams)} figuritas
+</p>
+
+<p>
+<b>Probabilidad de repetidas:</b>
+${have ? Math.floor(repeatedTotal/have*100) : 0}%
+</p>
+
+<p>
+<b>Selecciones avanzadas:</b>
+${near5.length + near3.length + near2.length + near1.length + complete.length}
+</p>
 
 `
 
@@ -1749,9 +1897,7 @@ setTimeout(()=>{
 
 el.classList.remove("flashSection")
 
-},1000)
-
-}
+},3000)
 
 function openTab(e,id){
 
