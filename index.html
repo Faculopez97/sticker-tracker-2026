@@ -729,7 +729,7 @@ updateTeamTitle(team)
 }
 
 updateStats()
-
+buildDuplicates()
 }
 
 function sticker(parent,label){
@@ -1044,18 +1044,52 @@ div.classList.add("haveSticker")
 if(count>1)
 div.classList.add("hasRepeated")
 
+let controls=""
+
+/* =========================
+SI NO LA TENES
+NO MOSTRAR +
+========================= */
+
+if(count==0){
+
+controls=`
+<div class="repControls">
+<div class="repCount">—</div>
+</div>
+`
+
+}
+
+/* =========================
+SI LA TENES
+MOSTRAR +
+========================= */
+
+else{
+
 let minusBtn=""
 let deleteBtn=""
 
 if(repeats>0){
 
-minusBtn=`<button class="repBtn" onclick="removeDuplicate('${label}')">−</button>`
+minusBtn=`
+<button class="repBtn"
+onclick="removeDuplicate('${label}')">
+−
+</button>
+`
 
-deleteBtn=`<button class="repDelete" onclick="deleteDuplicate('${label}')">✕</button>`
+deleteBtn=`
+<button class="repDelete"
+onclick="deleteDuplicate('${label}')">
+✕
+</button>
+`
 
 }
 
-div.innerHTML=`
+controls=`
 
 <div class="repTop">
 
@@ -1067,13 +1101,28 @@ ${deleteBtn}
 
 ${minusBtn}
 
-<div class="repCount">${repeats}</div>
+<div class="repCount">
+${repeats}
+</div>
 
-<button class="repBtn" onclick="addDuplicate('${label}')">+</button>
+<button class="repBtn"
+onclick="addDuplicate('${label}')">
++
+</button>
 
 </div>
 
-<div class="repNumber">${num}</div>
+`
+
+}
+
+div.innerHTML=`
+
+${controls}
+
+<div class="repNumber">
+${num}
+</div>
 
 `
 
