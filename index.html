@@ -144,6 +144,14 @@ justify-content:space-between;
 align-items:center;
 gap:5px;
 flex-wrap:wrap;
+font-family:
+"Segoe UI Emoji",
+"Apple Color Emoji",
+"Noto Color Emoji",
+Arial,
+sans-serif;
+}
+
 h3{
 font-family:
 "Segoe UI Emoji",
@@ -208,7 +216,7 @@ scroll-margin-top:20px;
 padding:14px;
 border-radius:18px;
 border:1px solid rgba(255,255,255,.08);
-background:rgba(255,255,255,.45);
+background:rgba(20,35,45,.95);
 backdrop-filter:blur(2px);
 }
 
@@ -1545,51 +1553,34 @@ s.style.display=(onlyMissing && data[label]) ? "none":"block"
 }
 
 function findSticker(){
-
 let text=document.getElementById("search").value.toUpperCase().trim()
-
 if(text===""){
-
 document.getElementById("searchResult").innerHTML="Buscá una figurita (ej: ARG 17)"
-
 return
-
 }
-
+if(num<1 || num>20){
+document.getElementById("searchResult").innerHTML=
+"Figurita inexistente"
+return
+}
 let parts=text.split(" ")
-
 if(parts.length<2 || isNaN(parseInt(parts[1]))){
-
 document.getElementById("searchResult").innerHTML="Formato: ARG 17"
-
 return
-
 }
-
 let team=parts[0]
-
 let num=parseInt(parts[1])
-
 let label=stickerLabel(team,num)
-
 let count=data[label]||0
-
 let status="FALTANTE"
-
 if(count==1) status="TENÉS"
-
 if(count>1) status="TENÉS REPETIDA ("+(count-1)+")"
-
 document.getElementById("searchResult").innerHTML=`
-
 <b>${label}</b><br>
-
 Estado: ${status}<br><br>
-
 <button onclick="addSticker('${label}')">
 Marcar que la tengo
 </button>
-
 ${count>=1 ? `
 <button onclick="addDuplicate('${label}')">
 Agregar repetida
@@ -1599,49 +1590,29 @@ Agregar repetida
 }
 
 function exportData(){
-
 let dataStr=JSON.stringify(data,null,2)
-
 let blob=new Blob([dataStr],{type:"application/json"})
-
 let a=document.createElement("a")
-
 a.href=URL.createObjectURL(blob)
-
 a.download="album2026.json"
-
 a.click()
-
 }
 
 function importData(event){
-
 let file=event.target.files[0]
-
 let reader=new FileReader()
-
 reader.onload=function(e){
-
 data=JSON.parse(e.target.result)
-
 save()
-
 location.reload()
-
 }
-
 reader.readAsText(file)
-
 }
 
 function printMissing(){
-
 let html=""
-
 let fwc=[]
-
 for(let i=0;i<20;i++){
-
 if(!data["FWC "+i]){
 fwc.push(i)
 }
