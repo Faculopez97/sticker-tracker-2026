@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link 
+rel="stylesheet"
+href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css">
 <title>Tracker Álbum Mundial 2026</title>
 
 <style>
@@ -141,6 +144,13 @@ justify-content:space-between;
 align-items:center;
 gap:5px;
 flex-wrap:wrap;
+h3{
+font-family:
+"Segoe UI Emoji",
+"Apple Color Emoji",
+"Noto Color Emoji",
+Arial,
+sans-serif;
 }
 
 .teamComplete{
@@ -232,6 +242,12 @@ overflow:visible;
 
 .albumEmpty{
 visibility:hidden;
+}
+
+.fi{
+font-size:16px;
+margin-right:4px;
+vertical-align:middle;
 }
 
 .repControls{
@@ -341,6 +357,12 @@ font-weight:bold;
 cursor:pointer;
 min-height:42px;
 transition:.2s;
+font-family:
+"Segoe UI Emoji",
+"Apple Color Emoji",
+"Noto Color Emoji",
+Arial,
+sans-serif;
 }
 
 .quickBtn:hover{
@@ -413,6 +435,12 @@ padding:8px 6px;
 font-size:11px;
 min-height:36px;
 border-radius:9px;
+font-family:
+"Segoe UI Emoji",
+"Apple Color Emoji",
+"Noto Color Emoji",
+Arial,
+sans-serif;
 }
 
 /* =========================
@@ -615,65 +643,65 @@ PAN:"Panamá"
 
 const teamFlags={
 
-MEX:"🇲🇽",
-RSA:"🇿🇦",
-KOR:"🇰🇷",
-CZE:"🇨🇿",
+MEX:'<span class="fi fi-mx"></span>',
+RSA:'<span class="fi fi-za"></span>',
+KOR:'<span class="fi fi-kr"></span>',
+CZE:'<span class="fi fi-cz"></span>',
 
-CAN:"🇨🇦",
-BIH:"🇧🇦",
-QAT:"🇶🇦",
-SUI:"🇨🇭",
+CAN:'<span class="fi fi-ca"></span>',
+BIH:'<span class="fi fi-ba"></span>',
+QAT:'<span class="fi fi-qa"></span>',
+SUI:'<span class="fi fi-ch"></span>',
 
-BRA:"🇧🇷",
-MAR:"🇲🇦",
-HAI:"🇭🇹",
-SCO:"🏴",
+BRA:'<span class="fi fi-br"></span>',
+MAR:'<span class="fi fi-ma"></span>',
+HAI:'<span class="fi fi-ht"></span>',
+SCO:'<span class="fi fi-gb-sct"></span>',
 
-USA:"🇺🇸",
-PAR:"🇵🇾",
-AUS:"🇦🇺",
-TUR:"🇹🇷",
+USA:'<span class="fi fi-us"></span>',
+PAR:'<span class="fi fi-py"></span>',
+AUS:'<span class="fi fi-au"></span>',
+TUR:'<span class="fi fi-tr"></span>',
 
-GER:"🇩🇪",
-CUW:"🇨🇼",
-CIV:"🇨🇮",
-ECU:"🇪🇨",
+GER:'<span class="fi fi-de"></span>',
+CUW:'<span class="fi fi-cw"></span>',
+CIV:'<span class="fi fi-ci"></span>',
+ECU:'<span class="fi fi-ec"></span>',
 
-NED:"🇳🇱",
-JPN:"🇯🇵",
-SWE:"🇸🇪",
-TUN:"🇹🇳",
+NED:'<span class="fi fi-nl"></span>',
+JPN:'<span class="fi fi-jp"></span>',
+SWE:'<span class="fi fi-se"></span>',
+TUN:'<span class="fi fi-tn"></span>',
 
-BEL:"🇧🇪",
-EGY:"🇪🇬",
-IRN:"🇮🇷",
-NZL:"🇳🇿",
+BEL:'<span class="fi fi-be"></span>',
+EGY:'<span class="fi fi-eg"></span>',
+IRN:'<span class="fi fi-ir"></span>',
+NZL:'<span class="fi fi-nz"></span>',
 
-ESP:"🇪🇸",
-CPV:"🇨🇻",
-KSA:"🇸🇦",
-URU:"🇺🇾",
+ESP:'<span class="fi fi-es"></span>',
+CPV:'<span class="fi fi-cv"></span>',
+KSA:'<span class="fi fi-sa"></span>',
+URU:'<span class="fi fi-uy"></span>',
 
-FRA:"🇫🇷",
-SEN:"🇸🇳",
-IRQ:"🇮🇶",
-NOR:"🇳🇴",
+FRA:'<span class="fi fi-fr"></span>',
+SEN:'<span class="fi fi-sn"></span>',
+IRQ:'<span class="fi fi-iq"></span>',
+NOR:'<span class="fi fi-no"></span>',
 
-ARG:"🇦🇷",
-ALG:"🇩🇿",
-AUT:"🇦🇹",
-JOR:"🇯🇴",
+ARG:'<span class="fi fi-ar"></span>',
+ALG:'<span class="fi fi-dz"></span>',
+AUT:'<span class="fi fi-at"></span>',
+JOR:'<span class="fi fi-jo"></span>',
 
-POR:"🇵🇹",
-COD:"🇨🇩",
-UZB:"🇺🇿",
-COL:"🇨🇴",
+POR:'<span class="fi fi-pt"></span>',
+COD:'<span class="fi fi-cd"></span>',
+UZB:'<span class="fi fi-uz"></span>',
+COL:'<span class="fi fi-co"></span>',
 
-ENG:"🏴",
-CRO:"🇭🇷",
-GHA:"🇬🇭",
-PAN:"🇵🇦"
+ENG:'<span class="fi fi-gb-eng"></span>',
+CRO:'<span class="fi fi-hr"></span>',
+GHA:'<span class="fi fi-gh"></span>',
+PAN:'<span class="fi fi-pa"></span>'
 
 }
 
@@ -1948,7 +1976,7 @@ let btn=document.createElement("button")
 
 btn.className="quickBtn"
 
-btn.innerText=`${teamFlags[team] || ""} ${team}`
+btn.innerHTML=`${teamFlags[team]} ${team}`
 
 btn.onclick=()=>scrollToSection(team)
 
