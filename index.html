@@ -613,6 +613,70 @@ GHA:"Ghana",
 PAN:"Panamá"
 }
 
+const teamFlags={
+
+MEX:"🇲🇽",
+RSA:"🇿🇦",
+KOR:"🇰🇷",
+CZE:"🇨🇿",
+
+CAN:"🇨🇦",
+BIH:"🇧🇦",
+QAT:"🇶🇦",
+SUI:"🇨🇭",
+
+BRA:"🇧🇷",
+MAR:"🇲🇦",
+HAI:"🇭🇹",
+SCO:"🏴",
+
+USA:"🇺🇸",
+PAR:"🇵🇾",
+AUS:"🇦🇺",
+TUR:"🇹🇷",
+
+GER:"🇩🇪",
+CUW:"🇨🇼",
+CIV:"🇨🇮",
+ECU:"🇪🇨",
+
+NED:"🇳🇱",
+JPN:"🇯🇵",
+SWE:"🇸🇪",
+TUN:"🇹🇳",
+
+BEL:"🇧🇪",
+EGY:"🇪🇬",
+IRN:"🇮🇷",
+NZL:"🇳🇿",
+
+ESP:"🇪🇸",
+CPV:"🇨🇻",
+KSA:"🇸🇦",
+URU:"🇺🇾",
+
+FRA:"🇫🇷",
+SEN:"🇸🇳",
+IRQ:"🇮🇶",
+NOR:"🇳🇴",
+
+ARG:"🇦🇷",
+ALG:"🇩🇿",
+AUT:"🇦🇹",
+JOR:"🇯🇴",
+
+POR:"🇵🇹",
+COD:"🇨🇩",
+UZB:"🇺🇿",
+COL:"🇨🇴",
+
+ENG:"🏴",
+CRO:"🇭🇷",
+GHA:"🇬🇭",
+PAN:"🇵🇦"
+
+}
+
 const teamPages={
 
 MEX:"8-9",
@@ -782,7 +846,7 @@ let pages=teamPages[team] || ""
 
 title.innerHTML=`
 <div>
-${team} - ${full}
+${teamFlags[team] || ""} ${team} - ${full}
 <span style="font-size:11px;color:#666">
 (Pág. ${pages})
 </span>
@@ -1223,7 +1287,12 @@ section.className="albumTeam"
 
 section.id="section-"+team
 
-section.innerHTML=`<h3>${team} - ${teamNames[team]}</h3>`
+section.innerHTML=`
+<h3>
+${teamFlags[team] || ""}
+${team} - ${teamNames[team]}
+</h3>
+`
 
 let page=document.createElement("div")
 
@@ -1580,7 +1649,7 @@ if(missing.length){
 
 html+=`
 <div class="team">
-<b>${team}</b> - ${missing.join(", ")}
+<b>${teamFlags[team] || ""} ${team}</b> - ${missing.join(", ")}
 </div>
 `
 
@@ -1668,7 +1737,7 @@ if(repeated.length){
 
 html+=`
 <div class="team">
-<b>${team}</b> - ${repeated.join(", ")}
+<b>${teamFlags[team] || ""} ${team}</b> - ${repeated.join(", ")}
 </div>
 `
 }
@@ -1879,7 +1948,7 @@ let btn=document.createElement("button")
 
 btn.className="quickBtn"
 
-btn.innerText=team
+btn.innerText=`${teamFlags[team] || ""} ${team}`
 
 btn.onclick=()=>scrollToSection(team)
 
