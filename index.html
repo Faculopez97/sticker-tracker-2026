@@ -1778,10 +1778,32 @@ buildPrintPage("Repetidas",html)
 
 async function copyAlbumData(){
 
-let text="Faltantes:\n\n"
+let text="Faltantes:\n"
 
 /* =========================
-FALTANTES
+FWC FALTANTES
+========================= */
+
+let fwcMissing=[]
+
+for(let i=0;i<20;i++){
+
+if(!data["FWC "+i]){
+fwcMissing.push(i)
+}
+
+}
+
+if(fwcMissing.length){
+
+text+=`FWC : ${fwcMissing.join(", ")}\n`
+
+}
+
+
+
+/* =========================
+SELECCIONES FALTANTES
 ========================= */
 
 Object.keys(groups).forEach(g=>{
@@ -1802,7 +1824,12 @@ missing.push(i)
 
 if(missing.length){
 
-text+=`${teamFlags[team].replace(/<[^>]*>/g,"")} ${team} : ${missing.join(", ")}\n`
+let flag=document
+.createElement("div")
+
+flag.innerHTML=teamFlags[team] || ""
+
+text+=`${team} ${flag.innerText} : ${missing.join(", ")}\n`
 
 }
 
@@ -1813,7 +1840,7 @@ text+=`${teamFlags[team].replace(/<[^>]*>/g,"")} ${team} : ${missing.join(", ")}
 
 
 /* =========================
-COCA
+CC FALTANTES
 ========================= */
 
 let cocaMissing=[]
@@ -1828,7 +1855,7 @@ cocaMissing.push(i)
 
 if(cocaMissing.length){
 
-text+=`\n🥤 CC : ${cocaMissing.join(", ")}\n`
+text+=`CC 🥤 : ${cocaMissing.join(", ")}\n`
 
 }
 
@@ -1838,7 +1865,41 @@ text+=`\n🥤 CC : ${cocaMissing.join(", ")}\n`
 REPETIDAS
 ========================= */
 
-text+="\n\nRepetidas:\n\n"
+text+="\nRepetidas:\n"
+
+
+
+/* =========================
+FWC REPETIDAS
+========================= */
+
+let fwcRepeated=[]
+
+for(let i=0;i<20;i++){
+
+let count=data["FWC "+i]||0
+
+if(count>1){
+
+fwcRepeated.push(
+i+(count>2 ? ` (${count-1})` : "")
+)
+
+}
+
+}
+
+if(fwcRepeated.length){
+
+text+=`FWC : ${fwcRepeated.join(", ")}\n`
+
+}
+
+
+
+/* =========================
+SELECCIONES REPETIDAS
+========================= */
 
 Object.keys(groups).forEach(g=>{
 
@@ -1864,7 +1925,12 @@ i+(count>2 ? ` (${count-1})` : "")
 
 if(repeated.length){
 
-text+=`${teamFlags[team].replace(/<[^>]*>/g,"")} ${team} : ${repeated.join(", ")}\n`
+let flag=document
+.createElement("div")
+
+flag.innerHTML=teamFlags[team] || ""
+
+text+=`${team} ${flag.innerText} : ${repeated.join(", ")}\n`
 
 }
 
@@ -1875,7 +1941,7 @@ text+=`${teamFlags[team].replace(/<[^>]*>/g,"")} ${team} : ${repeated.join(", ")
 
 
 /* =========================
-COCA REPETIDAS
+CC REPETIDAS
 ========================= */
 
 let cocaRepeated=[]
@@ -1896,7 +1962,7 @@ i+(count>2 ? ` (${count-1})` : "")
 
 if(cocaRepeated.length){
 
-text+=`\n🥤 CC : ${cocaRepeated.join(", ")}\n`
+text+=`CC 🥤 : ${cocaRepeated.join(", ")}\n`
 
 }
 
