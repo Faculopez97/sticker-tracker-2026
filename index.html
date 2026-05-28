@@ -715,6 +715,70 @@ PAN:'<span class="fi fi-pa"></span>'
 
 }
 
+const teamEmoji={
+
+MEX:"🇲🇽",
+RSA:"🇿🇦",
+KOR:"🇰🇷",
+CZE:"🇨🇿",
+
+CAN:"🇨🇦",
+BIH:"🇧🇦",
+QAT:"🇶🇦",
+SUI:"🇨🇭",
+
+BRA:"🇧🇷",
+MAR:"🇲🇦",
+HAI:"🇭🇹",
+SCO:"🏴",
+
+USA:"🇺🇸",
+PAR:"🇵🇾",
+AUS:"🇦🇺",
+TUR:"🇹🇷",
+
+GER:"🇩🇪",
+CUW:"🇨🇼",
+CIV:"🇨🇮",
+ECU:"🇪🇨",
+
+NED:"🇳🇱",
+JPN:"🇯🇵",
+SWE:"🇸🇪",
+TUN:"🇹🇳",
+
+BEL:"🇧🇪",
+EGY:"🇪🇬",
+IRN:"🇮🇷",
+NZL:"🇳🇿",
+
+ESP:"🇪🇸",
+CPV:"🇨🇻",
+KSA:"🇸🇦",
+URU:"🇺🇾",
+
+FRA:"🇫🇷",
+SEN:"🇸🇳",
+IRQ:"🇮🇶",
+NOR:"🇳🇴",
+
+ARG:"🇦🇷",
+ALG:"🇩🇿",
+AUT:"🇦🇹",
+JOR:"🇯🇴",
+
+POR:"🇵🇹",
+COD:"🇨🇩",
+UZB:"🇺🇿",
+COL:"🇨🇴",
+
+ENG:"🏴",
+CRO:"🇭🇷",
+GHA:"🇬🇭",
+PAN:"🇵🇦"
+
+}
+  
 const teamPages={
 
 MEX:"8-9",
@@ -1829,7 +1893,7 @@ let flag=document
 
 flag.innerHTML=teamFlags[team] || ""
 
-text+=`${team} ${flag.innerText} : ${missing.join(", ")}\n`
+text+=`${team} ${teamEmoji[team]}: ${missing.join(", ")}\n`
 
 }
 
@@ -1930,7 +1994,7 @@ let flag=document
 
 flag.innerHTML=teamFlags[team] || ""
 
-text+=`${team} ${flag.innerText} : ${repeated.join(", ")}\n`
+text+=`${team} ${teamEmoji[team]}: ${repeated.join(", ")}\n`
 
 }
 
