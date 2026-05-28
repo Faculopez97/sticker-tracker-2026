@@ -564,6 +564,8 @@ navigator.serviceWorker.register("service-worker.js");
 
 <button onclick="printRepeated()">Imprimir repetidas</button>
 
+<button onclick="copyAlbumData()">Copiar INTERCAMBIO</button>
+
 <div id="searchResult" class="searchBox">
 Buscá una figurita para ver su estado.
 </div>
@@ -1771,6 +1773,150 @@ html+=`
 }
 
 buildPrintPage("Repetidas",html)
+
+}
+
+async function copyAlbumData(){
+
+let text="Faltantes:\n\n"
+
+/* =========================
+FALTANTES
+========================= */
+
+Object.keys(groups).forEach(g=>{
+
+groups[g].forEach(team=>{
+
+let missing=[]
+
+for(let i=1;i<=20;i++){
+
+let label=stickerLabel(team,i)
+
+if(!data[label]){
+missing.push(i)
+}
+
+}
+
+if(missing.length){
+
+text+=`${teamFlags[team].replace(/<[^>]*>/g,"")} ${team} : ${missing.join(", ")}\n`
+
+}
+
+})
+
+})
+
+
+
+/* =========================
+COCA
+========================= */
+
+let cocaMissing=[]
+
+for(let i=1;i<=14;i++){
+
+if(!data["COCA "+i]){
+cocaMissing.push(i)
+}
+
+}
+
+if(cocaMissing.length){
+
+text+=`\n🥤 CC : ${cocaMissing.join(", ")}\n`
+
+}
+
+
+
+/* =========================
+REPETIDAS
+========================= */
+
+text+="\n\nRepetidas:\n\n"
+
+Object.keys(groups).forEach(g=>{
+
+groups[g].forEach(team=>{
+
+let repeated=[]
+
+for(let i=1;i<=20;i++){
+
+let label=stickerLabel(team,i)
+
+let count=data[label]||0
+
+if(count>1){
+
+repeated.push(
+i+(count>2 ? ` (${count-1})` : "")
+)
+
+}
+
+}
+
+if(repeated.length){
+
+text+=`${teamFlags[team].replace(/<[^>]*>/g,"")} ${team} : ${repeated.join(", ")}\n`
+
+}
+
+})
+
+})
+
+
+
+/* =========================
+COCA REPETIDAS
+========================= */
+
+let cocaRepeated=[]
+
+for(let i=1;i<=14;i++){
+
+let count=data["COCA "+i]||0
+
+if(count>1){
+
+cocaRepeated.push(
+i+(count>2 ? ` (${count-1})` : "")
+)
+
+}
+
+}
+
+if(cocaRepeated.length){
+
+text+=`\n🥤 CC : ${cocaRepeated.join(", ")}\n`
+
+}
+
+
+
+/* =========================
+COPIAR
+========================= */
+
+try{
+
+await navigator.clipboard.writeText(text)
+
+alert("Copiado al portapapeles")
+
+}catch(err){
+
+alert("No se pudo copiar")
+
+}
 
 }
 
