@@ -557,7 +557,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
 import {
-  getFirestore
+  getFirestore,
+  doc,
+  setDoc,
+  getDoc
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -578,7 +581,9 @@ window.provider = new GoogleAuthProvider();
 
 window.signInWithPopup = signInWithPopup;
 window.signOutFirebase = signOut;
-window.onAuthStateChangedFirebase = onAuthStateChanged;
+window.docFirestore = doc;
+window.setDocFirestore = setDoc;
+window.getDocFirestore = getDoc;
 
 </script>
 
@@ -907,8 +912,28 @@ K:["POR","COD","UZB","COL"],
 L:["ENG","CRO","GHA","PAN"]
 }
 
-function save(){
-localStorage.setItem("album2026",JSON.stringify(data))
+async function save(){
+
+localStorage.setItem(
+"album2026",
+JSON.stringify(data)
+)
+
+const user = window.auth.currentUser
+
+if(!user) return
+
+await window.setDocFirestore(
+window.docFirestore(
+window.db,
+"albums",
+user.uid
+),
+{
+data:data
+}
+)
+
 }
 
 function stickerLabel(team,num){
@@ -2373,6 +2398,7 @@ user.displayName
 
 alert("Sesión iniciada")
 
+await loadCloudData()
 }catch(err){
 
 console.error(err)
@@ -2410,6 +2436,34 @@ alert("Sesión cerrada")
 
 // }
 // )
+
+async function loadCloudData(){
+
+const user = window.auth.currentUser
+
+if(!user) return
+
+const snap =
+await window.getDocFirestore(
+window.docFirestore(
+window.db,
+"albums",
+user.uid
+)
+)
+
+if(snap.exists()){
+
+data = snap.data().data || {}
+
+save()
+
+buildAlbum()
+updateStats()
+
+}
+
+}
   
 buildAlbum()
 updateStats()
