@@ -548,24 +548,26 @@ navigator.serviceWorker.register("service-worker.js");
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 
-import { getAuth,
-GoogleAuthProvider,
-signInWithPopup,
-signOut,
-onAuthStateChanged
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
-import { getFirestore }
-from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import {
+  getFirestore
+} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA2sQk2HvBrtdW5DaYtU82UUjFldOdtqG8",
-  authDomain: "tracker-album-mundial-20-99d7c.firebaseapp.com",
-  projectId: "tracker-album-mundial-20-99d7c",
-  storageBucket: "tracker-album-mundial-20-99d7c.firebasestorage.app",
-  messagingSenderId: "799998098424",
-  appId: "1:799998098424:web:2db579458ae17ca1a6740d",
-  measurementId: "G-700QEX524R"
+  apiKey: "AIzaSyDKS4T_j9K56mgIAYABf0lltH5iA3ZhxaY",
+  authDomain: "trackerpanini2026.firebaseapp.com",
+  projectId: "trackerpanini2026",
+  storageBucket: "trackerpanini2026.firebasestorage.app",
+  messagingSenderId: "930363590159",
+  appId: "1:930363590159:web:c90cf73d1347d30c7f057a",
+  measurementId: "G-FYDSS1SLCG"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -577,37 +579,6 @@ window.provider = new GoogleAuthProvider();
 window.signInWithPopup = signInWithPopup;
 window.signOutFirebase = signOut;
 window.onAuthStateChangedFirebase = onAuthStateChanged;
-
-window.loginGoogle = async function(){
-
-try{
-
-const result = await signInWithPopup(
-window.auth,
-window.provider
-);
-
-document.getElementById("userInfo").innerText =
-result.user.displayName;
-
-}catch(error){
-
-console.error(error);
-
-}
-
-}
-
-window.logoutGoogle = async function(){
-
-await signOut(
-window.auth
-);
-
-document.getElementById("userInfo").innerText =
-"No conectado";
-
-}
 
 </script>
 
