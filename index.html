@@ -578,6 +578,37 @@ window.signInWithPopup = signInWithPopup;
 window.signOutFirebase = signOut;
 window.onAuthStateChangedFirebase = onAuthStateChanged;
 
+window.loginGoogle = async function(){
+
+try{
+
+const result = await signInWithPopup(
+window.auth,
+window.provider
+);
+
+document.getElementById("userInfo").innerText =
+result.user.displayName;
+
+}catch(error){
+
+console.error(error);
+
+}
+
+}
+
+window.logoutGoogle = async function(){
+
+await signOut(
+window.auth
+);
+
+document.getElementById("userInfo").innerText =
+"No conectado";
+
+}
+
 </script>
 
 
