@@ -548,22 +548,15 @@ navigator.serviceWorker.register("service-worker.js");
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
 
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-analytics.js";
-
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged
+import { getAuth,
+GoogleAuthProvider,
+signInWithPopup,
+signOut,
+onAuthStateChanged
 } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-auth.js";
 
-import {
-  getFirestore,
-  doc,
-  getDoc,
-  setDoc
-} from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+import { getFirestore }
+from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA2sQk2HvBrtdW5DaYtU82UUjFldOdtqG8",
@@ -571,16 +564,19 @@ const firebaseConfig = {
   projectId: "tracker-album-mundial-20-99d7c",
   storageBucket: "tracker-album-mundial-20-99d7c.firebasestorage.app",
   messagingSenderId: "799998098424",
-  appId: "1:799998098424:web:d149cbcf6fa1ea9ea6740d",
-  measurementId: "G-Y4M5YRN5TE"
+  appId: "1:799998098424:web:2db579458ae17ca1a6740d",
+  measurementId: "G-700QEX524R"
 };
 
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 
 window.auth = getAuth(app);
 window.db = getFirestore(app);
 window.provider = new GoogleAuthProvider();
+
+window.signInWithPopup = signInWithPopup;
+window.signOutFirebase = signOut;
+window.onAuthStateChangedFirebase = onAuthStateChanged;
 
 </script>
 
@@ -606,6 +602,16 @@ window.provider = new GoogleAuthProvider();
 <button onclick="printRepeated()">Imprimir repetidas</button>
 
 <button onclick="copyAlbumData()">Copiar INTERCAMBIO</button>
+
+<button onclick="loginGoogle()">
+🔑 Ingresar con Google
+</button>
+
+<button onclick="logoutGoogle()">
+🚪 Salir
+</button>
+
+<span id="userInfo"></span>
 
 <div id="searchResult" class="searchBox">
 Buscá una figurita para ver su estado.
@@ -2348,6 +2354,61 @@ e.target.classList.add("active")
 
 }
 
+async function loginGoogle(){
+
+try{
+
+const result =
+await window.signInWithPopup(
+window.auth,
+window.provider
+)
+
+const user = result.user
+
+document.getElementById("userInfo").innerText =
+user.displayName
+
+alert("Sesión iniciada")
+
+}catch(err){
+
+console.error(err)
+alert(err.message)
+
+}
+
+}
+
+async function logoutGoogle(){
+
+await window.signOutFirebase(window.auth)
+
+document.getElementById("userInfo").innerText=""
+
+alert("Sesión cerrada")
+
+}
+
+window.onAuthStateChangedFirebase(
+window.auth,
+(user)=>{
+
+if(user){
+
+document.getElementById("userInfo").innerText =
+user.displayName
+
+}else{
+
+document.getElementById("userInfo").innerText =
+"No conectado"
+
+}
+
+}
+)
+  
 buildAlbum()
 updateStats()
 
