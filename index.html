@@ -595,7 +595,7 @@ if(user){
 document.getElementById("userInfo").innerText =
 user.displayName
 
-await loadCloudData()
+await window.loadCloudData()
 
 }else{
 
@@ -1716,11 +1716,23 @@ s.style.display=(onlyMissing && data[label]) ? "none":"block"
 }
 
 function findSticker(){
+
 let text=document.getElementById("search").value.toUpperCase().trim()
+
 if(text===""){
-document.getElementById("searchResult").innerHTML="Buscá una figurita (ej: ARG 17)"
+document.getElementById("searchResult").innerHTML=
+"Buscá una figurita (ej: ARG 17)"
 return
 }
+
+let parts=text.split(" ")
+
+if(parts.length<2 || isNaN(parseInt(parts[1]))){
+document.getElementById("searchResult").innerHTML=
+"Formato: ARG 17"
+return
+}
+
 let team=parts[0]
 let num=parseInt(parts[1])
 
@@ -1729,18 +1741,18 @@ document.getElementById("searchResult").innerHTML=
 "Figurita inexistente"
 return
 }
-let parts=text.split(" ")
-if(parts.length<2 || isNaN(parseInt(parts[1]))){
-document.getElementById("searchResult").innerHTML="Formato: ARG 17"
-return
-}
-let team=parts[0]
-let num=parseInt(parts[1])
+
 let label=stickerLabel(team,num)
+
 let count=data[label]||0
+
 let status="FALTANTE"
+
 if(count==1) status="TENÉS"
-if(count>1) status="TENÉS REPETIDA ("+(count-1)+")"
+
+if(count>1)
+status="TENÉS REPETIDA ("+(count-1)+")"
+
 document.getElementById("searchResult").innerHTML=`
 <b>${label}</b><br>
 Estado: ${status}<br><br>
@@ -1753,6 +1765,7 @@ Agregar repetida
 </button>
 ` : ""}
 `
+
 }
 
 function exportData(){
@@ -2424,7 +2437,7 @@ user.displayName
 
 alert("Sesión iniciada")
 
-await loadCloudData()
+await window.loadCloudData()
 }catch(err){
 
 console.error(err)
@@ -2444,7 +2457,7 @@ alert("Sesión cerrada")
 
 }
 
-async function loadCloudData(){
+window.loadCloudData = async function(){
 
 const user = window.auth.currentUser
 
