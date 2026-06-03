@@ -584,7 +584,7 @@ window.signOutFirebase = signOut;
 window.docFirestore = doc;
 window.setDocFirestore = setDoc;
 window.getDocFirestore = getDoc;
-
+window.onAuthStateChangedFirebase = onAuthStateChanged;
 </script>
 
 
@@ -2418,18 +2418,26 @@ alert("Sesión cerrada")
 
 }
 
-setTimeout(() => {
+window.onAuthStateChangedFirebase(
+window.auth,
+async (user)=>{
 
-if(window.auth.currentUser){
+if(user){
 
 document.getElementById("userInfo").innerText =
-window.auth.currentUser.displayName
+user.displayName
 
-loadCloudData()
+await loadCloudData()
+
+}else{
+
+document.getElementById("userInfo").innerText =
+"No conectado"
 
 }
 
-},1000)
+}
+)
 
 async function loadCloudData(){
 
@@ -2449,8 +2457,6 @@ user.uid
 if(snap.exists()){
 
 data = snap.data().data || {}
-
-save()
 
 buildAlbum()
 updateStats()
