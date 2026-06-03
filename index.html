@@ -2418,24 +2418,24 @@ alert("Sesión cerrada")
 
 }
 
- window.onAuthStateChangedFirebase(
- window.auth,
- (user)=>{
-
- if(user){
-
- document.getElementById("userInfo").innerText =
- user.displayName
-
- }else{
-
- document.getElementById("userInfo").innerText =
- "No conectado"
-
- }
-
- }
- )
+// window.onAuthStateChangedFirebase(
+//   window.auth,
+//   (user)=>{
+//
+//     if(user){
+//
+//       document.getElementById("userInfo").innerText =
+//       user.displayName
+//
+//     }else{
+//
+//       document.getElementById("userInfo").innerText =
+//       "No conectado"
+//
+//     }
+//
+//   }
+// )
 
 async function loadCloudData(){
 
