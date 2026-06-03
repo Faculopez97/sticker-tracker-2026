@@ -585,6 +585,29 @@ window.docFirestore = doc;
 window.setDocFirestore = setDoc;
 window.getDocFirestore = getDoc;
 window.onAuthStateChangedFirebase = onAuthStateChanged;
+
+window.onAuthStateChangedFirebase(
+window.auth,
+async (user)=>{
+
+if(user){
+
+document.getElementById("userInfo").innerText =
+user.displayName
+
+await loadCloudData()
+
+}else{
+
+document.getElementById("userInfo").innerText =
+"No conectado"
+
+}
+
+}
+)
+
+
 </script>
 
 
@@ -1698,6 +1721,9 @@ if(text===""){
 document.getElementById("searchResult").innerHTML="Buscá una figurita (ej: ARG 17)"
 return
 }
+let team=parts[0]
+let num=parseInt(parts[1])
+
 if(num<1 || num>20){
 document.getElementById("searchResult").innerHTML=
 "Figurita inexistente"
@@ -2417,27 +2443,6 @@ document.getElementById("userInfo").innerText=""
 alert("Sesión cerrada")
 
 }
-
-window.onAuthStateChangedFirebase(
-window.auth,
-async (user)=>{
-
-if(user){
-
-document.getElementById("userInfo").innerText =
-user.displayName
-
-await loadCloudData()
-
-}else{
-
-document.getElementById("userInfo").innerText =
-"No conectado"
-
-}
-
-}
-)
 
 async function loadCloudData(){
 
